@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<title>world's dankest pastebin</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link href='https://pcaro.es/p/hermit/style.css' rel='stylesheet'>
+<link href="/static/style.css" rel='stylesheet'>
+<style>
+body, h1 {font-family: 'Hermit'}
+body, html {height: 100%}
+</style>
+<body>
+
+<div class="bgimg w3-display-container w3-animate-opacity w3-text-deep-orange">
+
+
+  <div class="w3-display-middle w3-mobile">
+
+    <h1 class="w3-xlarge w3-center w3-text-light-grey w3-middle w3-animate-top">Δ9-thc</h1>
+
+    <!--the follwing is the pastebin file upload card-->
+    <div class="w3-card-4 w3-animate-top" style="background-color:#444e5e;opacity:0.90">
+      <div class="w3-container w3-black" style="text-align:center">
+        <h2>dank-paste</h2>
+      </div>
+
+      <div id="paste-url" class='w3-container w3-blue' hidden="true">
+        <ul id="paste-url-list" class='w3-ul'>
+
+        </ul>
+        <input type='button' class='w3-input w3-btn w3-red' value='clear' onclick='clearUrls()'>
+      </div>
+
+      <form id="paste-form" action="/upload" enctype="multipart/form-data" method="post" class="w3-container w3-darkgrey">
+        <input id='file-select' class="w3-input w3-btn" type="file" name="file">
+        <input id='upload-button' class="w3-input w3-btn w3-green" type="submit" value="upload">
+      </form>
+
+      <hr class='w3-center' style="margin-left:auto;margin-right:auto;width:85%">
+
+      <div class='w3-container'>
+          <textarea id='paste-box' class='w3-input w3-padding-large pastebox' placeholder="paste some fuck'n text here">
+          </textarea>
+          <input id='paste-btn' class='w3-input w3-btn w3-padding-large' value="paste text" type='button'>
+      </div>
+
+      <script src="/static/upload.js"></script>
+
+      <div class="w3-container w3-text-light-grey" style="text-align:center;margin-top:10px;margin-bottom:10px">
+        64mb limit on uploaded files, dont be a jew
+      </div>
+
+      <hr class="w3-border-grey w3-animate-top" style="margin:auto;width:40%">
+      <p class="w3-large w3-center w3-text-light-grey">pastebin also works using curl</p>
+
+      <div class="w3-container code-box w3-text-white">
+  	     #~ cat 'filename here, dumbass' | curl --data-binary @- https://ganja.ml<br>
+  	     https://ganja.ml/nHK
+      </div>
+    </div>
+  </div>
+
+  <div class="w3-display-bottomleft w3-padding-large">
+    Powered by Rust and <a href="http://rocket.rs">Rocket</a>
+  </div>
+</div>
+
+</body>
+</html>

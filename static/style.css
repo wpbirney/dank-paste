@@ -1,0 +1,23 @@
+
+.bgimg {
+    background-image: url('/static/pimp.jpg');
+    min-height: 100%;
+    background-position: center;
+    background-size: cover;
+}
+
+.pastebox {
+    background-color: #50f442;
+    margin-left: auto;
+    margin-right: auto;
+    width: 85%;
+}
+
+.code-box{
+    width:auto;
+    background-color:#193d7a;
+    padding:8px 12px;
+    border-left:4px solid #4CAF50;
+    word-wrap:break-word;
+    opacity:0.9
+}

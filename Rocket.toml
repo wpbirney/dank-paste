@@ -1,0 +1,13 @@
+[development]
+address = "localhost"
+port = 8000
+
+[staging]
+address = "127.0.0.1"
+port = 24421
+secret_key = "MLkeFUxXgO6Xk+xco81P9caGVw9NqlOyOHjuoQZ4EDA="
+
+[production]
+address = "127.0.0.1"
+port = 24421
+secret_key = "MLkeFUxXgO6Xk+xco81P9caGVw9NqlOyOHjuoQZ4EDA="
