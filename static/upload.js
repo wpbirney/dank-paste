@@ -19,6 +19,7 @@ function clearUrls()  {
     pasteUrl.hidden = true;
 }
 
+//upload file
 form.onsubmit = function(event) {
     event.preventDefault();
 
@@ -54,6 +55,7 @@ document.getElementById('paste-box').value = "";
 var pastebox = document.getElementById('paste-box');
 var pastebtn = document.getElementById('paste-btn');
 
+//upload text
 pastebtn.onclick = function() {
     var p = pastebox.value;
 
