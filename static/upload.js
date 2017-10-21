@@ -5,49 +5,49 @@ var pasteUrl = document.getElementById("paste-url");
 var pasteUrlList= document.getElementById("paste-url-list");
 
 function addUrlEntry(url, list) {
-  var a = document.createElement("A");
-  a.target = "_blank";
-  a.href = url;
-  a.innerHTML = url;
-  var li = document.createElement("LI");
-  li.append(a);
-  list.append(li);
+    var a = document.createElement("A");
+    a.target = "_blank";
+    a.href = url;
+    a.innerHTML = url;
+    var li = document.createElement("LI");
+    li.append(a);
+    list.append(li);
 }
 
 function clearUrls()  {
-  pasteUrlList.innerHTML = "";
-  pasteUrl.hidden = true;
+    pasteUrlList.innerHTML = "";
+    pasteUrl.hidden = true;
 }
 
 form.onsubmit = function(event) {
-  event.preventDefault();
+    event.preventDefault();
 
-  var files = fileSelect.files;
-  if(files.length == 0) {
-    alert("no file selected");
-    return;
-  }
-  var formData = new FormData();
-  formData.append("file", files[0], files[0].name);
-
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", "/upload", true);
-
-  xhr.onreadystatechange = function () {
-    if (this.readyState == 4) {
-      if(this.status == 200) {
-        uploadButton.value = 'upload';
-        pasteUrl.hidden = false;
-        addUrlEntry(this.responseText, pasteUrlList);
-      } else {
-        uploadButton.value = 'upload';
-        alert("upload failed");
-      }
+    var files = fileSelect.files;
+    if(files.length == 0) {
+        alert("no file selected");
+        return;
     }
-  };
+    var formData = new FormData();
+    formData.append("file", files[0], files[0].name);
 
-  xhr.send(formData);
-  uploadButton.value = 'uploading...';
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/upload", true);
+
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            if(this.status == 200) {
+                uploadButton.value = 'upload';
+                pasteUrl.hidden = false;
+                addUrlEntry(this.responseText, pasteUrlList);
+            } else {
+                uploadButton.value = 'upload';
+                alert("upload failed");
+            }
+        }
+    };
+
+    xhr.send(formData);
+    uploadButton.value = 'uploading...';
 };
 
 document.getElementById('paste-box').value = "";
