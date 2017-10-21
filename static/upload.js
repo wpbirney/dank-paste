@@ -6,6 +6,7 @@ var pasteUrlList= document.getElementById("paste-url-list");
 
 function addUrlEntry(url, list) {
   var a = document.createElement("A");
+  a.target = "_blank";
   a.href = url;
   a.innerHTML = url;
   var li = document.createElement("LI");
