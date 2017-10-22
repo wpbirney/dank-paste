@@ -12,8 +12,7 @@ body, html {height: 100%}
 </style>
 <body>
 
-<div class="bgimg w3-display-container w3-animate-opacity w3-text-deep-orange">
-
+<div class="bgimg w3-display-container w3-animate-opacity">
 
   <div class="w3-display-middle w3-mobile">
 
@@ -32,17 +31,26 @@ body, html {height: 100%}
         <input type='button' class='w3-input w3-btn w3-red w3-round-large' value='clear' onclick='clearUrls()'>
       </div>
 
-      <form id="paste-form" action="/upload" enctype="multipart/form-data" method="post" class="w3-container w3-darkgrey ul-form">
-        <input id='file-select' class="w3-input w3-button w3-round-large" style='margin-top:1em' type="file" name="file">
-        <input id='upload-button' class="w3-input w3-btn w3-green w3-round-large" type="submit" value="upload">
+      <form id="paste-form" action="/upload" enctype="multipart/form-data" method="post" class="w3-container w3-darkgrey w3-mobile">
+        <input id='file-select' class="w3-input w3-btn w3-round-large" style='margin-top:1em' type="file" name="file">
+        <input id='upload-button' class="w3-input w3-btn w3-green w3-round-large" style='margin-bottom:1em' type="submit" value="upload">
       </form>
 
       <hr class='w3-center' style="margin-left:auto;margin-right:auto;width:85%">
 
-      <div class='w3-container'>
-          <textarea id='paste-box' class='w3-input w3-padding-large w3-round-large pastebox' placeholder="paste some fuck'n text here">
+      <div class='w3-container w3-mobile'>
+          <textarea id='paste-box' class='w3-input w3-padding-large w3-round-large pastebox' placeholder="paste some fuck'n text here" style='margin-top:1em'>
           </textarea>
           <input id='paste-btn' class='w3-input w3-btn w3-padding-large w3-round-large' value="paste text" type='button'>
+      </div>
+
+      <div class='w3-container w3-mobile'>
+          expire in:
+          <select id='expire' class='w3-select'>
+              <option value="0">one-shot</option>
+              <option value="24" selected>24 hrs</option>
+              <option value="48">48 hrs</option>
+          </select>
       </div>
 
       <script src="/static/upload.js"></script>

@@ -2,7 +2,8 @@ var form = document.getElementById("paste-form");
 var fileSelect = document.getElementById("file-select");
 var uploadButton = document.getElementById("upload-button");
 var pasteUrl = document.getElementById("paste-url");
-var pasteUrlList= document.getElementById("paste-url-list");
+var pasteUrlList = document.getElementById("paste-url-list");
+var expire = document.getElementById("expire");
 
 function addUrlEntry(url, list) {
     var a = document.createElement("A");
@@ -30,6 +31,7 @@ form.onsubmit = function(event) {
     }
     var formData = new FormData();
     formData.append("file", files[0], files[0].name);
+    formData.append("expire", expire.value);
 
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/upload", true);
