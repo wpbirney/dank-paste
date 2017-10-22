@@ -55,17 +55,6 @@ fn main() {
         fs::create_dir("upload").unwrap();
     }
 
-    let mut buf: Vec<u8> = vec![0; 1024*1024*128];
-    let i = File::open("file").unwrap().read_to_end(&mut buf).unwrap();
-    println!("file loaded");
-    let p = AjaxPaste{
-        data: buf[..i].to_vec(),
-        expire: 24
-    };
-
-    let f = File::create("fuck.json").unwrap();
-    serde_json::to_writer(f, &p).unwrap();
-
     let (_handle, _tx) = paste_dog::launch();
 
     let r = routes![index, static_file, retrieve, upload, upload_form];
