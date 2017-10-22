@@ -94,12 +94,13 @@ fn retrieve(id: String) -> Stream<Cursor<Vec<u8>>> {
 
     let file_size = Path::new(&filename).metadata().unwrap().len();
     let mut buf: Vec<u8> = vec![0; file_size as usize];
-    File::open(filename).unwrap().read_to_end(&mut buf).unwrap();
+    File::open(&filename).unwrap().read_to_end(&mut buf).unwrap();
 
-    if let Ok(file) = File::open(jsonpath)  {
+    if let Ok(file) = File::open(&jsonpath)  {
         let info: PasteInfo = serde_json::from_reader(file).unwrap();
         if info.expire == 0  {
-            File::create(format!("upload/{}.delete", me)).unwrap();
+            fs::remove_file(&filename).unwrap();
+            fs::remove_file(&jsonpath).unwrap();
         }
     }
     Stream::from(Cursor::new(buf))
