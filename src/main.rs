@@ -17,7 +17,7 @@ mod paste_dog;
 mod paste_id;
 mod mpu;
 
-use std::io::{self, Write, Read, Cursor};
+use std::io::{self, Write, Read, Cursor, Seek, SeekFrom};
 use std::path::{Path, PathBuf};
 use std::fs::{self, File};
 
@@ -27,6 +27,8 @@ use rocket::request::{self, FromRequest, Request};
 use rocket::Outcome;
 
 use mpu::MultipartUpload;
+
+use serde_json::Value;
 
 #[derive(Serialize, Deserialize)]
 pub struct PasteInfo    {
@@ -87,23 +89,11 @@ fn static_file(path: PathBuf) -> Option<NamedFile> {
 }
 
 #[get("/<id>")]
-fn retrieve(id: String) -> Stream<Cursor<Vec<u8>>> {
+fn retrieve(id: String) -> Option<File> {
 	let me: String = id.chars().take(3).collect();
     let filename = format!("upload/{}", me);
     let jsonpath = format!("upload/{}.json", me);
-
-    let file_size = Path::new(&filename).metadata().unwrap().len();
-    let mut buf: Vec<u8> = vec![0; file_size as usize];
-    File::open(&filename).unwrap().read_to_end(&mut buf).unwrap();
-
-    if let Ok(file) = File::open(&jsonpath)  {
-        let info: PasteInfo = serde_json::from_reader(file).unwrap();
-        if info.expire == 0  {
-            fs::remove_file(&filename).unwrap();
-            fs::remove_file(&jsonpath).unwrap();
-        }
-    }
-    Stream::from(Cursor::new(buf))
+    File::open(filename).ok()
 }
 
 
