@@ -83,6 +83,6 @@ pastebtn.onclick = function() {
       }
     };
 
-    var buf = {"data": p};
+    xhr.setRequestHeader("expire", expire.value);
     xhr.send(p);
 };

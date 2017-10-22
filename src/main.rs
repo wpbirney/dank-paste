@@ -40,7 +40,7 @@ impl PasteInfo  {
 
     pub fn write_to_file(&self, path: &String)   {
         let mut f = File::create(path).unwrap();
-        f.write_all(serde_json::to_string_pretty(&self).unwrap().as_bytes()).unwrap();
+        serde_json::to_writer(f, &self).unwrap();
     }
 }
 
