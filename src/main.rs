@@ -17,12 +17,12 @@ mod paste_dog;
 mod paste_id;
 mod mpu;
 
-use std::io::{self, Write, Read};
+use std::io::{self, Write, Read, Cursor};
 use std::path::{Path, PathBuf};
 use std::fs::{self, File};
 
 use rocket::data::Data;
-use rocket::response::NamedFile;
+use rocket::response::{NamedFile, Stream};
 use rocket::request::{self, FromRequest, Request};
 use rocket::Outcome;
 
@@ -42,7 +42,12 @@ impl PasteInfo  {
         }
     }
 
-    pub fn write_to_file(&self, path: &String)   {
+    pub fn load(path: &str) -> PasteInfo {
+        let f = File::open(path).unwrap();
+        serde_json::from_reader(f).unwrap()
+    }
+
+    pub fn write_to_file(&self, path: &str)   {
         let f = File::create(path).unwrap();
         serde_json::to_writer(f, &self).unwrap();
     }
@@ -82,11 +87,24 @@ fn static_file(path: PathBuf) -> Option<NamedFile> {
 }
 
 #[get("/<id>")]
-fn retrieve(id: String) -> Option<File> {
+fn retrieve(id: String) -> Stream<Cursor<Vec<u8>>> {
 	let me: String = id.chars().take(3).collect();
     let filename = format!("upload/{}", me);
-    File::open(&filename).ok()
+    let jsonpath = format!("upload/{}.json", me);
+
+    let file_size = Path::new(&filename).metadata().unwrap().len();
+    let mut buf: Vec<u8> = vec![0; file_size as usize];
+    File::open(filename).unwrap().read_to_end(&mut buf).unwrap();
+
+    if let Ok(file) = File::open(jsonpath)  {
+        let info: PasteInfo = serde_json::from_reader(file).unwrap();
+        if info.expire == 0  {
+            File::create(format!("upload/{}.delete", me)).unwrap();
+        }
+    }
+    Stream::from(Cursor::new(buf))
 }
+
 
 #[post("/", data = "<paste>")]
 fn upload(paste: Data, info: PasteInfo) -> Option<String> {
