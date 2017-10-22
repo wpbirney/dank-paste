@@ -10,7 +10,6 @@ use multipart::server::Multipart;
 
 pub struct MultipartUpload  {
     file: Vec<u8>,
-    pub expire: u64
 }
 
 impl MultipartUpload    {
@@ -36,7 +35,6 @@ impl FromData for MultipartUpload   {
 
         // Custom implementation parts
         let mut file = None;
-        let mut expire = None;
 
         mp.foreach_entry(|mut entry| {
             match entry.name.as_str() {
@@ -46,17 +44,12 @@ impl FromData for MultipartUpload   {
                     f.read_to_end(&mut d).expect("cant read");
                     file = Some(d);
                 },
-                "expire" => {
-                    let val = entry.data.as_text().unwrap().to_string();
-                    expire = Some(val.parse().unwrap());
-                }
                 other => panic!("No known key {}", other),
             }
         }).expect("Unable to iterate");
 
         let v = MultipartUpload {
             file: file.expect("file not set"),
-            expire: expire.expect("expire not set")
         };
 
         // End custom

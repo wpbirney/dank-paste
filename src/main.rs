@@ -23,6 +23,8 @@ use std::fs::{self, File};
 
 use rocket::data::Data;
 use rocket::response::NamedFile;
+use rocket::request::{self, FromRequest, Request};
+use rocket::Outcome;
 
 use mpu::MultipartUpload;
 
@@ -32,22 +34,29 @@ pub struct PasteInfo    {
 }
 
 impl PasteInfo  {
-    pub fn new(hours: u64) -> Option<PasteInfo>   {
+    pub fn new(hours: u64) -> PasteInfo   {
         if hours <= 48  {
-            Some(PasteInfo{expire: hours})
-        } else { None }
+            PasteInfo{expire: hours}
+        } else {
+            PasteInfo{expire: 48}
+        }
     }
 
     pub fn write_to_file(&self, path: &String)   {
-        let mut f = File::create(path).unwrap();
+        let f = File::create(path).unwrap();
         serde_json::to_writer(f, &self).unwrap();
     }
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct AjaxPaste {
-    data: Vec<u8>,
-    expire: u64
+impl <'a,'r>FromRequest<'a,'r> for PasteInfo  {
+    type Error = ();
+    fn from_request(request: &'a Request<'r>) -> request::Outcome<PasteInfo, ()>  {
+        if let Some(ex) = request.headers().get_one("expire")   {
+            Outcome::Success(PasteInfo::new(ex.parse().unwrap()))
+        } else {
+            Outcome::Success(PasteInfo::new(48))
+        }
+    }
 }
 
 fn main() {
@@ -80,17 +89,17 @@ fn retrieve(id: String) -> Option<File> {
 }
 
 #[post("/", data = "<paste>")]
-fn upload(paste: Data) -> io::Result<String> {
+fn upload(paste: Data, info: PasteInfo) -> Option<String> {
     let (filename, url) = paste_id::generate();
-    paste.stream_to_file(Path::new(&filename))?;
-    Ok(format!("{}\n", url))
+    paste.stream_to_file(Path::new(&filename)).unwrap();
+    info.write_to_file(&format!("{}.{}", &filename, "json"));
+    Some(format!("{}\n", url))
 }
 
 #[post("/upload", data = "<paste>")]
-fn upload_form(paste: MultipartUpload) -> Option<String> {
+fn upload_form(paste: MultipartUpload, info: PasteInfo) -> Option<String> {
     let (filename, url) = paste_id::generate();
     paste.write_to_file(&filename);
-    let info = PasteInfo::new(paste.expire).unwrap();
     info.write_to_file(&format!("{}.{}", &filename, "json"));
     Some(format!("{}", url))
 }

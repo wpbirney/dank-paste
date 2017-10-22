@@ -31,7 +31,6 @@ form.onsubmit = function(event) {
     }
     var formData = new FormData();
     formData.append("file", files[0], files[0].name);
-    formData.append("expire", expire.value);
 
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/upload", true);
@@ -49,6 +48,7 @@ form.onsubmit = function(event) {
         }
     };
 
+    xhr.setRequestHeader("expire", expire.value);
     xhr.send(formData);
     uploadButton.value = 'uploading...';
 };
