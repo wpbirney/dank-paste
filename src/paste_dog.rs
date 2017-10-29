@@ -16,6 +16,13 @@ pub fn launch() -> (JoinHandle<()>, Sender<u8>)  {
     (handle, tx)
 }
 
+fn del_paste(paste: &str)   {
+    println!("deleting paste {}", paste);
+    fs::remove_file(format!("upload/{}", paste)).unwrap_or(());
+    fs::remove_file(format!("upload/{}.json", paste)).unwrap_or(());
+    fs::remove_file(format!("upload/{}.del", paste)).unwrap_or(());
+}
+
 fn remove_old() {
     for path in fs::read_dir("upload").unwrap() {
         let path = path.unwrap();
@@ -24,12 +31,26 @@ fn remove_old() {
             continue;
         }
 
-        let meta = path.metadata().unwrap();
-        let modified = meta.modified().unwrap();
-        let hours = modified.elapsed().unwrap().as_secs() / 60 / 60;
+        let fp = path.path();
+        if let Some(ext) = fp.extension() {
+            if ext == "del" {
+                del_paste(fp.file_stem().unwrap().to_str().unwrap());
+            } else if ext == "json" {
+                let meta = path.metadata().unwrap();
+                let modified = meta.modified().unwrap();
+                let age = modified.elapsed().unwrap().as_secs();
+                let info = ::PasteInfo::load(fp.to_str().unwrap());
 
-        if hours >= 24 {
-            fs::remove_file(path.path()).unwrap();
+                if info.expire == 0 {
+                    if age > 259200 {
+                        del_paste(fp.file_stem().unwrap().to_str().unwrap());
+                    }
+                } else {
+                    if age > info.expire {
+                        del_paste(fp.file_stem().unwrap().to_str().unwrap());
+                    }
+                }
+            }
         }
     }
 }
