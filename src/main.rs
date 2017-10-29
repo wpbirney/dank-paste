@@ -39,12 +39,8 @@ pub struct PasteInfo    {
 }
 
 impl PasteInfo  {
-    pub fn new(hours: u64) -> PasteInfo   {
-        if hours <= 48  {
-            PasteInfo{expire: hours}
-        } else {
-            PasteInfo{expire: 48}
-        }
+    pub fn new(secs: u64) -> PasteInfo   {
+        PasteInfo{expire: secs}
     }
 
     pub fn load(path: &str) -> PasteInfo {
