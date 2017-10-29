@@ -25,6 +25,9 @@ use rocket::data::Data;
 use rocket::response::{NamedFile, Stream};
 use rocket::request::{self, FromRequest, Request};
 use rocket::Outcome;
+use rocket::State;
+
+use std::sync::RwLock;
 
 use mpu::MultipartUpload;
 
@@ -75,7 +78,8 @@ fn main() {
 
     let r = routes![index, static_file, retrieve, upload, upload_form];
 
-    rocket::ignite().mount("/", r).launch();
+    rocket::ignite()
+        .mount("/", r).launch();
 }
 
 #[get("/")]
@@ -93,6 +97,19 @@ fn retrieve(id: String) -> Option<File> {
 	let me: String = id.chars().take(3).collect();
     let filename = format!("upload/{}", me);
     let jsonpath = format!("upload/{}.json", me);
+    let delpath = format!("upload/{}.del", me);
+
+    if Path::new(&delpath).exists()  {
+        return None
+    }
+
+    if Path::new(&jsonpath).exists() {
+        let info = PasteInfo::load(&jsonpath);
+        if info.expire == 0 {
+            File::create(&delpath).unwrap();
+        }
+    }
+
     File::open(filename).ok()
 }
 
