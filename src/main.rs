@@ -10,60 +10,22 @@ extern crate rand;
 #[macro_use]
 extern crate serde_derive;
 
-#[macro_use]
+//#[macro_use]
 extern crate serde_json;
 
 mod paste_dog;
 mod paste_id;
+mod paste_info;
 mod mpu;
 
-use std::io::{self, Write, Read, Cursor, Seek, SeekFrom};
+use paste_info::PasteInfo;
+use mpu::MultipartUpload;
+
 use std::path::{Path, PathBuf};
 use std::fs::{self, File};
 
 use rocket::data::Data;
-use rocket::response::{NamedFile, Stream};
-use rocket::request::{self, FromRequest, Request};
-use rocket::Outcome;
-use rocket::State;
-
-use std::sync::RwLock;
-
-use mpu::MultipartUpload;
-
-use serde_json::Value;
-
-#[derive(Serialize, Deserialize)]
-pub struct PasteInfo    {
-    expire: u64
-}
-
-impl PasteInfo  {
-    pub fn new(secs: u64) -> PasteInfo   {
-        PasteInfo{expire: secs}
-    }
-
-    pub fn load(path: &str) -> PasteInfo {
-        let f = File::open(path).unwrap();
-        serde_json::from_reader(f).unwrap()
-    }
-
-    pub fn write_to_file(&self, path: &str)   {
-        let f = File::create(path).unwrap();
-        serde_json::to_writer(f, &self).unwrap();
-    }
-}
-
-impl <'a,'r>FromRequest<'a,'r> for PasteInfo  {
-    type Error = ();
-    fn from_request(request: &'a Request<'r>) -> request::Outcome<PasteInfo, ()>  {
-        if let Some(ex) = request.headers().get_one("expire")   {
-            Outcome::Success(PasteInfo::new(ex.parse().unwrap()))
-        } else {
-            Outcome::Success(PasteInfo::new(48))
-        }
-    }
-}
+use rocket::response::NamedFile;
 
 fn main() {
     if !Path::new("upload").exists()    {

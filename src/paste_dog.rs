@@ -8,6 +8,8 @@ use std::time::Duration;
 use std::thread::{self, JoinHandle};
 use std::sync::mpsc::{channel, Receiver, Sender};
 
+use paste_info::PasteInfo;
+
 pub fn launch() -> (JoinHandle<()>, Sender<u8>)  {
     let (tx, rx) = channel::<u8>();
     let handle = thread::spawn(move || {
@@ -39,7 +41,7 @@ fn remove_old() {
                 let meta = path.metadata().unwrap();
                 let modified = meta.modified().unwrap();
                 let age = modified.elapsed().unwrap().as_secs();
-                let info = ::PasteInfo::load(fp.to_str().unwrap());
+                let info = PasteInfo::load(fp.to_str().unwrap());
 
                 if info.expire == 0 {
                     if age > 259200 {
