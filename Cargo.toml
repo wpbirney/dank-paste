@@ -1,7 +1,7 @@
 [package]
 name = "dank-paste"
 version = "0.1.0"
-authors = ["Wilson Birney <wpbirney@gmail.com>"]
+authors = ["Wilson Birney <wpb@360scada.com>"]
 
 [dependencies]
 rocket = "*"
