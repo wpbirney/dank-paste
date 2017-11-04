@@ -4,10 +4,12 @@ body {
 	font-family: "Segoe UI", Arial, sans-serif;
 	line-height: 1.5;
 	margin: 0;
-    background-image: url('pimp.jpg');
+	/*background-color: white;*/
+	background-image: url('pimp.jpg');
 	background-repeat: no-repeat;
 	background-attachment: fixed;
-	background-size: cover;
+	background-position: 50% 20%;
+	background-size: contain;
 }
 button {
 	padding: 0.5rem;
@@ -40,7 +42,8 @@ button:hover {
 	color: white;
 	border-radius: 0.5rem 0.5rem 0 0;
 }
-.dp-container h3 {
+.dp-container h2 {
+	font-size: 1.2rem;
 	text-align: center;
 	margin: 0.25rem 0;
 	color: grey;
@@ -104,6 +107,68 @@ button:hover {
 .dp-container #paste-url button {
     background-color: #f44336;
 }
+.dp-container .file-wrapper {
+	height: 2rem;
+	margin: 0.5rem;
+	background-color: #68b0de;
+	overflow: hidden;
+	border-radius: 0.5rem;
+	border: 1px solid white;
+}
+.dp-container .file-wrapper input[type="file"] {
+	position: relative;
+	margin: 0;
+	height: 100%;
+	width: 100%;
+	opacity: 0;
+	-moz-opacity: 0;
+    filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+	z-index: 2;
+	cursor: pointer;
+}
+.dp-container #theme-btn {
+	font-size: 0.75rem;
+	text-decoration: none;
+	text-align: center;
+	color: grey;
+	cursor: pointer;
+}
+body.theme-dark {
+	background-color: #111;
+
+}
+div.theme-dark {
+	background-color: black;
+}
+div.theme-dark h1 {
+	background-color: grey;
+	color: black;
+}
+div.theme-dark h3,
+div.theme-dark p,
+div.theme-dark a,
+div.theme-dark input,
+div.theme-dark select,
+div.theme-dark textarea,
+div.theme-dark code,
+div.theme-dark #theme-btn {
+	color: green;
+}
+div.theme-dark code {
+	background-color: #07123f;
+}
+div.theme-dark select,
+div.theme-dark textarea {
+	background-color: black;
+}
+div.theme-dark button,
+div.theme-dark select,
+div.theme-dark textarea {
+	border: 1px solid green;
+}
+div.theme-dark button {
+	color: black;
+}
 @media (max-width: 420px) {
 	.dp-container {
 		width: 100%;
@@ -113,7 +178,7 @@ button:hover {
 	.dp-container h1 {
 		border-radius: 0;
 	}
-	.dp-container code:last-child {
+	.dp-container code:last-of-type {
 		border-radius: 0;
 	}
 }

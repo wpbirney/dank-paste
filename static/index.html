@@ -13,11 +13,11 @@
 	<ul id="paste-url-list"></ul>
 	<button id="url-clear-btn" type="button">Clear URLs</button>
 	</div>
-	<h3>Upload by File</h3>
-	<input id="upload-file" type="file">
+	<h2>Upload by File</h2>
+	<div class="file-wrapper"><input id="upload-file" type="file"><p>Choose File...</p></div>
 	<button id="upload-btn" type="button">Upload</button>
 	<hr />
-	<h3>Upload by Paste</h3>
+	<h2>Upload by Paste</h2>
 	<textarea id="paste-box" placeholder="Paste some text here"></textarea>
 	<button id="paste-btn" type="button">Paste Text</button>
 	<label for="expire">Expire In:</label>
@@ -33,9 +33,11 @@
 	<p>64MB limit on uploaded files, don't be a jew</p>
 	<hr class="small" />
 	<p class="large">dank-paste also works using curl</p>
+	<p><span id="theme-btn">Change Theme</span></p>
 	<code>#~ cat 'filename here, dumbass' | curl --data-binary @- https://ganja.ml</code>
 	<code>https://ganja.ml/nHK</code>
-	<script src="static/upload.js"></script>
+	<script type="text/javascript" src="static/upload.js"></script>
+	<script type="text/javascript" src="static/themes.js"></script>
 </div>
 </body>
 </html>
