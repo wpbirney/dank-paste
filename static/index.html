@@ -1,82 +1,41 @@
 <!DOCTYPE html>
-<html>
-<title>world's dankest pastebin</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link href='https://pcaro.es/p/hermit/style.css' rel='stylesheet'>
-<link href="/static/style.css" rel='stylesheet'>
-<style>
-body, h1 {font-family: 'Hermit'}
-body, html {height: 100%}
-</style>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>World's Dankest Pastebin</title>
+<link rel="stylesheet" href="static/style.css">
+</head>
 <body>
-
-<div class="bgimg w3-display-container w3-animate-opacity">
-
-  <div class="w3-display-middle w3-mobile">
-
-    <h1 class="w3-xlarge w3-center w3-text-light-grey w3-middle w3-animate-top">Δ9-thc</h1>
-
-    <!--the follwing is the pastebin file upload card-->
-    <div class="w3-card-4 w3-animate-top" style="background-color:#444e5e;opacity:0.90">
-      <div class="w3-container w3-black" style="text-align:center">
-        <h2>dank-paste</h2>
-      </div>
-
-      <div id="paste-url" class='w3-container w3-blue' hidden="true">
-        <ul id="paste-url-list" class='w3-ul'>
-
-        </ul>
-        <input type='button' class='w3-input w3-btn w3-red w3-round-large' value='clear' onclick='clearUrls()'>
-      </div>
-
-      <form id="paste-form" action="/upload" enctype="multipart/form-data" method="post" class="w3-container w3-darkgrey w3-mobile">
-        <input id='file-select' class="w3-input w3-btn w3-round-large" style='margin-top:1em' type="file" name="file">
-        <input id='upload-button' class="w3-input w3-btn w3-green w3-round-large" style='margin-bottom:1em' type="submit" value="upload">
-      </form>
-
-      <hr class='w3-center' style="margin-left:auto;margin-right:auto;width:85%">
-
-      <div class='w3-container w3-mobile'>
-          <textarea id='paste-box' class='w3-input w3-padding-large w3-round-large pastebox' placeholder="paste some fuck'n text here" style='margin-top:1em'>
-          </textarea>
-          <input id='paste-btn' class='w3-input w3-btn w3-padding-large w3-round-large' value="paste text" type='button'>
-      </div>
-
-      <div class='w3-container w3-mobile'>
-          expire in:
-          <select id='expire' class='w3-select'>
-              <option value="0">one-shot</option>
-              <option value="60">1 minute</option>
-              <option value="1800">30 minutes</option>
-              <option value="3600">1 hour</option>
-              <option value="86400" selected>1 day</option>
-              <option value="172800">2 days</option>
-              <option value="259200">3 days</option>
-          </select>
-      </div>
-
-      <script src="/static/upload.js"></script>
-
-      <div class="w3-container w3-text-light-grey" style="text-align:center;margin-top:10px;margin-bottom:10px">
-        64mb limit on uploaded files, dont be a jew
-      </div>
-
-      <hr class="w3-border-grey w3-animate-top" style="margin:auto;width:40%">
-      <p class="w3-large w3-center w3-text-light-grey">pastebin also works using curl</p>
-
-      <div class="w3-container code-box w3-text-white">
-  	     #~ cat 'filename here, dumbass' | curl --data-binary @- https://ganja.ml<br>
-  	     https://ganja.ml/nHK
-      </div>
-    </div>
-  </div>
-
-  <div class="w3-display-bottomleft w3-padding-large w3-text-orange">
-    Powered by Rust and <a href="http://rocket.rs">Rocket</a>
-  </div>
+<div class="dp-container">
+	<h1>dank-paste</h1>
+	<div id="paste-url">
+	<ul id="paste-url-list"></ul>
+	<button id="url-clear-btn" type="button">Clear URLs</button>
+	</div>
+	<h3>Upload by File</h3>
+	<input id="upload-file" type="file">
+	<button id="upload-btn" type="button">Upload</button>
+	<hr />
+	<h3>Upload by Paste</h3>
+	<textarea id="paste-box" placeholder="Paste some text here"></textarea>
+	<button id="paste-btn" type="button">Paste Text</button>
+	<label for="expire">Expire In:</label>
+	<select id="expire">
+		<option value="0">one-shot</option>
+		<option value="60">1 minute</option>
+		<option value="1800">30 minutes</option>
+		<option value="3600">1 hour</option>
+		<option value="86400" selected>1 day</option>
+		<option value="172800">2 days</option>
+		<option value="259200">3 days</option>
+	</select>
+	<p>64MB limit on uploaded files, don't be a jew</p>
+	<hr class="small" />
+	<p class="large">dank-paste also works using curl</p>
+	<code>#~ cat 'filename here, dumbass' | curl --data-binary @- https://ganja.ml</code>
+	<code>https://ganja.ml/nHK</code>
+	<script src="static/upload.js"></script>
 </div>
-
 </body>
 </html>

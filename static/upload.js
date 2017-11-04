@@ -1,88 +1,76 @@
-var form = document.getElementById("paste-form");
-var fileSelect = document.getElementById("file-select");
-var uploadButton = document.getElementById("upload-button");
-var pasteUrl = document.getElementById("paste-url");
-var pasteUrlList = document.getElementById("paste-url-list");
-var expire = document.getElementById("expire");
-
-function addUrlEntry(url, list) {
-    var a = document.createElement("A");
-    a.target = "_blank";
-    a.href = url;
-    a.innerHTML = url;
-    var li = document.createElement("LI");
-    li.append(a);
-    list.append(li);
+function addUrlEntry(url) {
+	var list = document.getElementById('paste-url-list');
+	var item = document.createElement('li');
+	var link = document.createElement('a');
+	var linkText = document.createTextNode(url);
+	link.target = '_blank';
+	link.href = url;
+	link.appendChild(linkText);
+	item.appendChild(link);
+	list.appendChild(item);
 }
 
-function clearUrls()  {
-    pasteUrlList.innerHTML = "";
-    pasteUrl.hidden = true;
-}
+var uploadButton = document.getElementById('upload-btn');
+var pasteButton = document.getElementById('paste-btn');
+var clearUrlButton = document.getElementById('url-clear-btn');
+var pasteUrlContainer = document.getElementById('paste-url');
+var expire = document.getElementById('expire');
 
 //upload file
-form.onsubmit = function(event) {
-    event.preventDefault();
+uploadButton.addEventListener('click', function() {
+	var files = document.getElementById('upload-file').files;
+	if(files.length > 0) {
+		var form = new FormData();
+		form.append('file', files[0], files[0].name);
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', '/upload', true);
+		xhr.onreadystatechange = function() {
+			if(this.readyState == 4) {
+				if(this.status == 200) {
+					//display url list, append url
+					pasteUrlContainer.style.display = 'flex';
+					addUrlEntry(this.responseText);
+				} else {
+					alert('Upload failed!');
+				}
+			}
+		};
+		xhr.setRequestHeader('expire', expire.value);
+		xhr.send(form);
+	} else {
+		alert('Please select a file to upload');
+	}
+});
 
-    var files = fileSelect.files;
-    if(files.length == 0) {
-        alert("no file selected");
-        return;
-    }
-    var formData = new FormData();
-    formData.append("file", files[0], files[0].name);
+//upload pasted text
+pasteButton.addEventListener('click', function() {
+	var p = document.getElementById('paste-box').value;
+	if(p != "") {
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', '/', true);
+		xhr.onreadystatechange = function() {
+			if(this.readyState == 4) {
+				if(this.status == 200) {
+					//display url list, append url
+					pasteUrlContainer.style.display = 'flex';
+					addUrlEntry(this.responseText);
+				}
+			}
+		};
+        xhr.setRequestHeader('expire', expire.value);
+        xhr.send(p);
+	} else {
+		alert("Enter some text to paste fool");
+	}
+});
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/upload", true);
-
-    xhr.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            if(this.status == 200) {
-                uploadButton.value = 'upload';
-                pasteUrl.hidden = false;
-                addUrlEntry(this.responseText, pasteUrlList);
-            } else {
-                uploadButton.value = 'upload';
-                alert("upload failed");
-            }
-        }
-    };
-
-    xhr.setRequestHeader("expire", expire.value);
-    xhr.send(formData);
-    uploadButton.value = 'uploading...';
-};
-
-document.getElementById('paste-box').value = "";
-var pastebox = document.getElementById('paste-box');
-var pastebtn = document.getElementById('paste-btn');
-
-//upload text
-pastebtn.onclick = function() {
-    var p = pastebox.value;
-
-    if(p == "") {
-        alert("paste is empty nigga");
-        return;
-    }
-    pastebtn.value = "uploading...";
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/", true);
-    xhr.onreadystatechange = function () {
-      if (this.readyState == 4) {
-        if(this.status == 200) {
-            pastebtn.value = 'paste text';
-            pasteUrl.hidden = false;
-            addUrlEntry(this.responseText, pasteUrlList);
-            pastebox.value = '';
-        } else {
-            pastebtn.value = 'paste text';
-            alert("upload failed");
-        }
-      }
-    };
-
-    xhr.setRequestHeader("expire", expire.value);
-    xhr.send(p);
-};
+//clear urls
+clearUrlButton.addEventListener('click', function() {
+	var pasteUrlList = document.getElementById('paste-url-list');
+	//remove all child nodes
+	while(pasteUrlList.hasChildNodes()) {
+		pasteUrlList.removeChild(pasteUrlList.lastChild);
+	}
+	//hide the url list container
+	pasteUrlContainer.style.display = 'none';
+});
