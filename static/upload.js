@@ -44,8 +44,8 @@ uploadButton.addEventListener('click', function() {
 
 //upload pasted text
 pasteButton.addEventListener('click', function() {
-	var p = document.getElementById('paste-box').value;
-	if(p != "") {
+	var p = document.getElementById('paste-box');
+	if(p.value != "") {
 		var xhr = new XMLHttpRequest();
 		xhr.open('POST', '/', true);
 		xhr.onreadystatechange = function() {
@@ -54,11 +54,12 @@ pasteButton.addEventListener('click', function() {
 					//display url list, append url
 					pasteUrlContainer.style.display = 'flex';
 					addUrlEntry(this.responseText);
+                    p.value = "";
 				}
 			}
 		};
         xhr.setRequestHeader('expire', expire.value);
-        xhr.send(p);
+        xhr.send(p.value);
 	} else {
 		alert("Enter some text to paste fool");
 	}
