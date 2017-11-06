@@ -55,8 +55,7 @@ fn static_file(path: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new("static/").join(path)).ok()
 }
 
-#[get("/<id>")]
-fn retrieve(id: String) -> Option<File> {
+fn get_paste(id: String) -> Option<File> {
 	let me: String = id.chars().take(3).collect();
     let filename = format!("upload/{}", me);
     let jsonpath = format!("upload/{}.json", me);
@@ -76,6 +75,11 @@ fn retrieve(id: String) -> Option<File> {
     File::open(filename).ok()
 }
 
+#[get("/<id>")]
+fn retrieve(id: String) -> Option<File> {
+	get_paste(id)
+}
+
 #[derive(Serialize)]
 struct PrettyCtx {
     content: String
@@ -83,23 +87,7 @@ struct PrettyCtx {
 
 #[get("/h/<id>")]
 fn retrieve_pretty(id: String) -> Option<Template> {
-	let me: String = id.chars().take(3).collect();
-    let filename = format!("upload/{}", me);
-    let jsonpath = format!("upload/{}.json", me);
-    let delpath = format!("upload/{}.del", me);
-
-    if Path::new(&delpath).exists()  {
-        return None
-    }
-
-    if Path::new(&jsonpath).exists() {
-        let info = PasteInfo::load(&jsonpath);
-        if info.expire == 0 {
-            File::create(&delpath).unwrap();
-        }
-    }
-
-    let mut f = File::open(filename).unwrap();
+    let mut f = get_paste(id).unwrap();
     let mut buf = String::new();
     f.read_to_string(&mut buf).unwrap();
     Some(Template::render("pretty", PrettyCtx{ content: buf }))
