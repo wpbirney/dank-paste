@@ -31,6 +31,8 @@ use rocket::response::NamedFile;
 
 use rocket_contrib::Template;
 
+static VERSION: &str = "dank-paste v0.1.0";
+
 fn main() {
     if !Path::new("upload").exists()    {
         fs::create_dir("upload").unwrap();
@@ -79,7 +81,8 @@ fn retrieve(id: String) -> Option<File> {
 
 #[derive(Serialize)]
 struct PrettyCtx {
-    content: String
+    content: String,
+	version: String
 }
 
 #[get("/h/<id>")]
@@ -87,7 +90,7 @@ fn retrieve_pretty(id: String) -> Option<Template> {
     let mut f = get_paste(id)?;
     let mut buf = String::new();
     f.read_to_string(&mut buf).ok()?;
-    Some(Template::render("pretty", PrettyCtx{ content: buf }))
+    Some(Template::render("pretty", PrettyCtx{ content: buf, version: VERSION.to_string() }))
 }
 
 
