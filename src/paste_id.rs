@@ -12,9 +12,16 @@ pub fn generate_id(size: usize) -> String {
     id
 }
 
-pub fn generate() -> (String, String)  {
-    let id = generate_id(3);
-    let filename = format!("upload/{}", id);
-    let url = format!("https://ganja.ml/{}", id);
-    (filename, url)
+pub struct PasteId {
+	id: String
+}
+
+impl PasteId {
+	pub fn generate() -> PasteId {
+		PasteId{ id: generate_id(3) }
+	}
+	pub fn id(&self) -> String { self.id.clone() }
+	pub fn filename(&self) -> String { format!("upload/{}", self.id) }
+	pub fn url(&self) -> String { format!("https://ganja.ml/{}", self.id) }
+	pub fn source_url(&self) -> String { format!("https://ganja.ml/h/{}", self.id) }
 }

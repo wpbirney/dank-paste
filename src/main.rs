@@ -19,6 +19,7 @@ mod paste_id;
 mod paste_info;
 mod mpu;
 
+use paste_id::PasteId;
 use paste_info::{PasteInfo, PastePath};
 use mpu::MultipartUpload;
 
@@ -30,6 +31,7 @@ use rocket::data::Data;
 use rocket::response::NamedFile;
 
 use rocket_contrib::Template;
+use rocket_contrib::Json;
 
 static VERSION: &str = "dank-paste v0.1.0";
 
@@ -93,19 +95,36 @@ fn retrieve_pretty(id: String) -> Option<Template> {
     Some(Template::render("pretty", PrettyCtx{ content: buf, version: VERSION.to_string() }))
 }
 
+#[derive(Serialize)]
+struct UploadResponse {
+	id: String,
+	expire: u64,
+	raw_url: String,
+	source_url: String
+}
 
 #[post("/", data = "<paste>")]
-fn upload(paste: Data, info: PasteInfo) -> Option<String> {
-    let (filename, url) = paste_id::generate();
-    paste.stream_to_file(Path::new(&filename)).unwrap();
-    info.write_to_file(&format!("{}.{}", &filename, "json"));
-    Some(format!("{}\n", url))
+fn upload(paste: Data, info: PasteInfo) -> Option<Json<UploadResponse>> {
+	let id = PasteId::generate();
+    paste.stream_to_file(Path::new(&id.filename())).unwrap();
+    info.write_to_file(&format!("{}.{}", id.filename(), "json"));
+    Some(Json(UploadResponse{
+		id: id.id(),
+		expire: info.expire,
+		raw_url: id.url(),
+		source_url: id.source_url()
+	}))
 }
 
 #[post("/upload", data = "<paste>")]
-fn upload_form(paste: MultipartUpload, info: PasteInfo) -> Option<String> {
-    let (filename, url) = paste_id::generate();
-    paste.write_to_file(&filename);
-    info.write_to_file(&format!("{}.{}", &filename, "json"));
-    Some(format!("{}", url))
+fn upload_form(paste: MultipartUpload, info: PasteInfo) -> Option<Json<UploadResponse>> {
+	let id = PasteId::generate();
+    paste.write_to_file(&id.filename());
+    info.write_to_file(&format!("{}.{}", id.filename(), "json"));
+	Some(Json(UploadResponse{
+		id: id.id(),
+		expire: info.expire,
+		raw_url: id.url(),
+		source_url: id.source_url()
+	}))
 }

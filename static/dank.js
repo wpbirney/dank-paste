@@ -1,12 +1,31 @@
-function addUrlEntry(url) {
+function createLinkButton(url, text)	{
+	var link = document.createElement('a');
+	link.innerHTML = text;
+	link.style.marginLeft = '1em';
+	link.style.minWidth = '5em';
+	link.href = url;
+	link.target = '_blank';
+	return link;
+}
+
+function addUrlEntry(response) {
+	var r = JSON.parse(response);
+
 	var list = document.getElementById('paste-url-list');
 	var item = document.createElement('li');
-	var link = document.createElement('a');
-	var linkText = document.createTextNode(url);
-	link.target = '_blank';
-	link.href = url;
-	link.appendChild(linkText);
-	item.appendChild(link);
+
+	var rlink = createLinkButton(r.raw_url, 'raw');
+	var slink = createLinkButton(r.source_url, 'source');
+
+	var id = document.createElement('label');
+	id.innerHTML = "Paste Id: " + r.id;
+
+	var hr = document.createElement('hr');
+
+	item.appendChild(id);
+	item.appendChild(rlink);
+	item.appendChild(slink);
+	item.appendChild(hr);
 	list.appendChild(item);
 }
 
