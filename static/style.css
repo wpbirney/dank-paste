@@ -5,23 +5,11 @@ body {
 	line-height: 1.5;
 	margin: 0;
 	background-color: white;
-	background-image: url('pimp.jpg');
+    background-image: url('/static/pimp.jpg');
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	background-position: 50% 20%;
 	background-size: contain;
-}
-button {
-	padding: 0.5rem;
-	margin: 0.5rem;
-	border: 1px solid white;
-	border-radius: 0.5rem;
-	background-color: #4caf50;
-	color: white;
-	cursor: pointer;
-}
-button:hover {
-	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 3px 10px 0 rgba(0,0,0,0.19)
 }
 .dp-container {
 	display: flex;
@@ -69,18 +57,14 @@ button:hover {
 .dp-container input[type="file"] {
 	margin: 0.5rem auto;
 }
-.dp-container textarea {
-	border-radius: 0.5rem;
-	border: 1px solid white;
-	padding: 0.5rem;
-	margin: 0.5rem;
-}
+.dp-container textarea,
 .dp-container select {
-	margin: 0.5rem;
-	padding: 0.5rem;
 	border-radius: 0.5rem;
 	border: 1px solid white;
+	padding: 0.5rem;
+	margin: 0.5rem;
 }
+
 .dp-container label {
 	margin-left: 0.5rem;
 }
@@ -92,6 +76,21 @@ button:hover {
 }
 .dp-container code:last-of-type {
 	border-radius: 0 0 0.5rem 0.5rem;
+}
+.dp-container button {
+	padding: 0.5rem;
+	margin: 0.5rem;
+	border: 1px solid white;
+	border-radius: 0.5rem;
+	background-color: #4caf50;
+	color: white;
+	cursor: pointer;
+}
+.dp-container button:hover,
+.dp-container .file-wrapper:hover,
+.dp-container select:focus,
+.dp-container textarea:focus {
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 3px 10px 0 rgba(0,0,0,0.19);
 }
 .dp-container #paste-url {
 	display: none;
@@ -111,15 +110,13 @@ button:hover {
 	height: 2rem;
 	margin: 0.5rem;
 	background-color: #68b0de;
-	background-image: url('./selectfile.png');
+	background-image: url('/static/bg_selectfile.svg');
 	background-position: center;
 	background-repeat: no-repeat;
+	background-size: 80px 16px;
 	overflow: hidden;
 	border-radius: 0.5rem;
 	border: 1px solid white;
-}
-.dp-container .file-wrapper:hover {
-	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 3px 10px 0 rgba(0,0,0,0.19);
 }
 .dp-container .file-wrapper input[type="file"] {
 	position: relative;
@@ -180,6 +177,17 @@ div.theme-dark textarea {
 }
 div.theme-dark button {
 	color: black;
+}
+div.theme-dark .file-wrapper {
+	border-color: green;
+	background-image: url('/static/bg_selectfile_dark.svg');
+	background-color: #0066a7;
+}
+div.theme-dark button:hover,
+div.theme-dark .file-wrapper:hover,
+div.theme-dark select:focus,
+div.theme-dark textarea:focus {
+	box-shadow: 0 4px 8px 0 rgba(0,255,0,0.2), 0 3px 10px 0 rgba(0,255,0,0.19);
 }
 @media (max-width: 420px) {
 	.dp-container {
