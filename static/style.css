@@ -92,7 +92,8 @@ body {
 .dp-container code:last-of-type {
 	border-radius: 0 0 0.5rem 0.5rem;
 }
-.dp-container button {
+.dp-container button,
+.dp-container #theme-btn {
 	padding: 0.5rem;
 	margin: 0.5rem;
 	border: 1px solid white;
@@ -151,13 +152,6 @@ body {
 	top: 0;
 	z-index: 1;
 }
-.dp-container #theme-btn {
-	font-size: 0.75rem;
-	text-decoration: none;
-	text-align: center;
-	color: grey;
-	cursor: pointer;
-}
 body.theme-dark {
 	background-color: #111;
 
@@ -176,8 +170,7 @@ div.theme-dark input,
 div.theme-dark select,
 div.theme-dark textarea,
 div.theme-dark code,
-div.theme-dark label,
-div.theme-dark #theme-btn {
+div.theme-dark label {
 	color: green;
 }
 div.theme-dark code {
@@ -189,10 +182,12 @@ div.theme-dark textarea {
 }
 div.theme-dark button,
 div.theme-dark select,
-div.theme-dark textarea {
+div.theme-dark textarea,
+div.theme-dark #theme-btn {
 	border: 1px solid green;
 }
-div.theme-dark button {
+div.theme-dark button,
+div.theme-dark #theme-btn {
 	color: black;
 }
 div.theme-dark .file-wrapper {
