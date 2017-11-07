@@ -19,7 +19,7 @@ mod paste_id;
 mod paste_info;
 mod mpu;
 
-use paste_info::PasteInfo;
+use paste_info::{PasteInfo, PastePath};
 use mpu::MultipartUpload;
 
 use std::path::{Path, PathBuf};
@@ -56,23 +56,20 @@ fn static_file(path: PathBuf) -> Option<NamedFile> {
 }
 
 fn get_paste(id: String) -> Option<File> {
-	let me: String = id.chars().take(3).collect();
-    let filename = format!("upload/{}", me);
-    let jsonpath = format!("upload/{}.json", me);
-    let delpath = format!("upload/{}.del", me);
+	let p = PastePath::new(id.chars().take(3).collect());
 
-    if Path::new(&delpath).exists()  {
+	if Path::new(&p.del()).exists()  {
         return None
-    }
+	}
 
-    if Path::new(&jsonpath).exists() {
-        let info = PasteInfo::load(&jsonpath);
+    if Path::new(&p.json()).exists() {
+        let info = PasteInfo::load(&p.json());
         if info.expire == 0 {
-            File::create(&delpath).unwrap();
+            File::create(&p.del()).unwrap();
         }
     }
 
-    File::open(filename).ok()
+    File::open(p.data()).ok()
 }
 
 #[get("/<id>")]
