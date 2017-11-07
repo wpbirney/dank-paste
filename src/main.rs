@@ -87,9 +87,9 @@ struct PrettyCtx {
 
 #[get("/h/<id>")]
 fn retrieve_pretty(id: String) -> Option<Template> {
-    let mut f = get_paste(id).unwrap();
+    let mut f = get_paste(id)?;
     let mut buf = String::new();
-    f.read_to_string(&mut buf).unwrap();
+    f.read_to_string(&mut buf).ok()?;
     Some(Template::render("pretty", PrettyCtx{ content: buf }))
 }
 
