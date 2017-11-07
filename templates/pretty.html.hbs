@@ -3,10 +3,56 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>{{title}}</title>
 <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+<script src="/static/lang-rust.js"></script>
+<link rel='stylesheet' href='/static/so.css'>
+<style>
+	body {
+		background-color: rgb(0,10,0);
+		color: green;
+	}
+	.select {
+		background-color: rgb(0,50,0);
+		border: 1px solid green;
+		border-radius: 0.5em;
+	}
+</style>
 </head>
 <body>
-<pre class='prettyprint'>{{content}}</pre>
+	<label>Language Select:</label>
+	<select id="lang-pick" class='select'>
+		<option value="auto" selected>auto</option>
+		<option value="rust">rust</option>
+	</select>
+	<pre id='code' class='prettyprint linenums'>{{content}}</pre>
 </body>
+
+<script>
+	var pick = document.getElementById("lang-pick");
+
+	function updateLang(reload)	{
+		var c = document.getElementById("code");
+		if(pick.value == "rust")	{
+			c.classList.add('lang-rust');
+		} else {
+			c.classList.remove('lang-rust');
+		}
+		if(reload) {
+			document.location.reload();
+		}
+	}
+
+	var params = new URLSearchParams(window.location.search);
+
+	var q = params.get('lang');
+	if(q != null)	{
+		pick.value = q;
+	}
+	updateLang(false);
+
+	document.getElementById("lang-pick").addEventListener('change', function() {
+		onChange(true);
+	});
+</script>
+
 </html>
