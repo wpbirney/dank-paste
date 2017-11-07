@@ -4,11 +4,12 @@
 */
 
 use std::fs;
+use std::path::Path;
 use std::time::Duration;
 use std::thread::{self, JoinHandle};
 use std::sync::mpsc::{channel, Receiver, Sender};
 
-use paste_info::PasteInfo;
+use paste_info::{PasteInfo, PastePath};
 
 pub fn launch() -> (JoinHandle<()>, Sender<u8>)  {
     let (tx, rx) = channel::<u8>();
@@ -18,11 +19,9 @@ pub fn launch() -> (JoinHandle<()>, Sender<u8>)  {
     (handle, tx)
 }
 
-fn del_paste(paste: &str)   {
-    println!("deleting paste {}", paste);
-    fs::remove_file(format!("upload/{}", paste)).unwrap_or(());
-    fs::remove_file(format!("upload/{}.json", paste)).unwrap_or(());
-    fs::remove_file(format!("upload/{}.del", paste)).unwrap_or(());
+fn get_age(path: &Path) -> Option<u64> {
+	let modified = path.metadata().ok()?.modified().ok()?;
+	Some(modified.elapsed().ok()?.as_secs())
 }
 
 fn remove_old() {
@@ -34,26 +33,25 @@ fn remove_old() {
         }
 
         let fp = path.path();
-        if let Some(ext) = fp.extension() {
-            if ext == "del" {
-                del_paste(fp.file_stem().unwrap().to_str().unwrap());
-            } else if ext == "json" {
-                let meta = path.metadata().unwrap();
-                let modified = meta.modified().unwrap();
-                let age = modified.elapsed().unwrap().as_secs();
-                let info = PasteInfo::load(fp.to_str().unwrap());
+		if let Some(ext) = fp.extension() {
+			let paths = PastePath::new(fp.file_stem().unwrap().to_str().unwrap().to_string());
+			if ext == "del" {
+				paths.delete_all();
+			} else if ext == "json" {
+				let age = get_age(&fp).unwrap();
+				let info = PasteInfo::load(fp.to_str().unwrap());
 
-                if info.expire == 0 {
-                    if age > 259200 {
-                        del_paste(fp.file_stem().unwrap().to_str().unwrap());
-                    }
-                } else {
-                    if age > info.expire {
-                        del_paste(fp.file_stem().unwrap().to_str().unwrap());
-                    }
-                }
-            }
-        }
+				if info.expire == 0 {
+					if age > 259200 {
+						paths.delete_all();
+					}
+				} else {
+					if age > info.expire {
+						paths.delete_all();
+					}
+				}
+			}
+		}
     }
 }
 

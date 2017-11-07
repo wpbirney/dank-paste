@@ -1,4 +1,4 @@
-use std::fs::File;
+use std::fs::{self, File};
 
 use rocket::request::{self, Request, FromRequest};
 use rocket::Outcome;
@@ -47,4 +47,11 @@ impl PastePath {
 	pub fn data(&self) -> String { format!("upload/{}", &self.0) }
 	pub fn json(&self) -> String { format!("upload/{}.json", &self.0) }
 	pub fn del(&self) -> String { format!("upload/{}.del", &self.0) }
+
+	pub fn delete_all(&self)	{
+		println!("deleting paste {}", self.0);
+	    fs::remove_file(self.data()).unwrap_or(());
+	    fs::remove_file(self.json()).unwrap_or(());
+	    fs::remove_file(self.del()).unwrap_or(());
+	}
 }
