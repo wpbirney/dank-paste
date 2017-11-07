@@ -11,7 +11,7 @@ use std::sync::mpsc::{channel, Receiver, Sender};
 
 use paste_info::{PasteInfo, PastePath};
 
-static ONESHOT_MAXAGE: u64 = 259200;
+pub static MAX_AGE: u64 = 259200;
 
 pub fn launch() -> (JoinHandle<()>, Sender<u8>)  {
     let (tx, rx) = channel::<u8>();
@@ -44,7 +44,7 @@ fn remove_old() {
 				let info = PasteInfo::load(fp.to_str().unwrap());
 
 				if info.expire == 0 {
-					if age > ONESHOT_MAXAGE {
+					if age > MAX_AGE {
 						paths.delete_all();
 					}
 				} else {

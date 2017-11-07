@@ -5,6 +5,8 @@ use rocket::Outcome;
 
 use serde_json;
 
+use paste_dog::MAX_AGE;
+
 #[derive(Serialize, Deserialize)]
 pub struct PasteInfo    {
     pub expire: u64
@@ -29,11 +31,11 @@ impl PasteInfo  {
 impl <'a,'r>FromRequest<'a,'r> for PasteInfo  {
     type Error = ();
     fn from_request(request: &'a Request<'r>) -> request::Outcome<PasteInfo, ()>  {
-        if let Some(ex) = request.headers().get_one("expire")   {
-            Outcome::Success(PasteInfo::new(ex.parse().unwrap()))
-        } else {
-            Outcome::Success(PasteInfo::new(48))
-        }
+		let mut age: u64 = MAX_AGE;
+		if let Some(ex) = request.headers().get_one("expire")   {
+			age = ex.parse().unwrap();
+		}
+		Outcome::Success(PasteInfo::new(age))
     }
 }
 
