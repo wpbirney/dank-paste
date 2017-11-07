@@ -36,3 +36,15 @@ impl <'a,'r>FromRequest<'a,'r> for PasteInfo  {
         }
     }
 }
+
+pub struct PastePath(String);
+
+impl PastePath {
+	pub fn new(id: String) -> PastePath {
+		PastePath(id)
+	}
+
+	pub fn data(&self) -> String { format!("upload/{}", &self.0) }
+	pub fn json(&self) -> String { format!("upload/{}.json", &self.0) }
+	pub fn del(&self) -> String { format!("upload/{}.del", &self.0) }
+}
