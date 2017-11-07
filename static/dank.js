@@ -99,7 +99,6 @@ updateFileWrapper();
 
 //toggles between light (default style) and dark themes (class theme-dark)
 var currentTheme = 'light';
-var changeThemeButton = document.getElementById('theme-btn');
 
 function toggleTheme() {
 	var themedElements = ['body', '.dp-container'];
@@ -113,6 +112,15 @@ function toggleTheme() {
 	}
 	updateFileWrapper();
 	currentTheme = (currentTheme == 'light') ? 'dark' : 'light';
+	setCookie('theme', currentTheme, 365);
 }
 
-changeThemeButton.addEventListener('click', toggleTheme);
+document.getElementById('theme-btn').addEventListener('click', toggleTheme);
+
+switch(getCookie('theme'))	{
+	case 'light':
+		break;
+	default:
+		toggleTheme();
+		break;
+}
