@@ -124,8 +124,6 @@ body {
 	height: 100%;
 	width: 100%;
 	opacity: 0;
-	-moz-opacity: 0;
-    filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);
 	z-index: 2;
 	cursor: pointer;
 }
@@ -160,6 +158,7 @@ div.theme-dark input,
 div.theme-dark select,
 div.theme-dark textarea,
 div.theme-dark code,
+div.theme-dark label,
 div.theme-dark #theme-btn {
 	color: green;
 }
