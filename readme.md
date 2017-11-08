@@ -19,7 +19,7 @@ I recommend using [rustup](https://www.rustup.rs/) to get nightly and stay up to
 
 ### Deployment
 
-When deploying it is recommended to put dank-paste behind a reverse-proxy like nginx like
+When deploying to a production server it is recommended to put dank-paste behind nginx using proxy_pass
 ```
 location / {
     		proxy_pass http://127.0.0.1:{PORT NUMBER FOR dank-paste};
