@@ -38,10 +38,10 @@ var fileInput = document.getElementById('upload-file');
 var fileWrapper = document.getElementsByClassName('file-wrapper')[0];
 
 //file wrapper background urls
-const fileWrapperSelect = "url('/static/bg_selectfile.svg')";
-const fileWrapperChange = "url('/static/bg_changefile.svg')";
-const fileWrapperSelectDark = "url('/static/bg_selectfile_dark.svg')";
-const fileWrapperChangeDark = "url('/static/bg_changefile_dark.svg')";
+const fileWrapperSelect = "url('/static/img/bg_selectfile.svg')";
+const fileWrapperChange = "url('/static/img/bg_changefile.svg')";
+const fileWrapperSelectDark = "url('/static/img/bg_selectfile_dark.svg')";
+const fileWrapperChangeDark = "url('/static/img/bg_changefile_dark.svg')";
 
 
 //upload file

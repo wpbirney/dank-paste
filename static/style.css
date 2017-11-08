@@ -129,7 +129,7 @@ body {
 	height: 2rem;
 	margin: 0.5rem;
 	background-color: #68b0de;
-	background-image: url('/static/bg_selectfile.svg');
+	background-image: url('/static/img/bg_selectfile.svg');
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: 80px 16px;
@@ -192,7 +192,7 @@ div.theme-dark #theme-btn {
 }
 div.theme-dark .file-wrapper {
 	border-color: green;
-	background-image: url('/static/bg_selectfile_dark.svg');
+	background-image: url('/static/img/bg_selectfile_dark.svg');
 	background-color: #0066a7;
 }
 div.theme-dark button:hover,
