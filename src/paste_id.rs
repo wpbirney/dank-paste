@@ -24,10 +24,16 @@ pub struct PasteId {
 
 impl PasteId {
 	pub fn generate() -> PasteId {
-		let mut id = generate_id(3);
+		let mut len = 2;
+		let mut tries = 0;
+		let mut id = generate_id(len);
 		while check_for_id(&id)	{
-			println!("collision detected");
-			id = generate_id(3);
+			if tries > 5 {
+				len += 1;
+				tries = 0;
+			}
+			id = generate_id(len);
+			tries += 1;
 		}
 		PasteId{ id: id }
 	}
