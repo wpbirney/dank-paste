@@ -6,6 +6,7 @@ The World's Dankest Paste Bin!
 
 dank-paste requires rocket, therefor currently requiring a nightly rust compiler,
 I recommend using [rustup](https://www.rustup.rs/) to get nightly and stay up to date.
+The vanilla build is currently hosted at [ganja.ml](https://ganja.ml), so go check it out
 
 1. Get dank-paste source
    ```
