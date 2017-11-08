@@ -60,7 +60,12 @@ fn static_file(path: PathBuf) -> Option<NamedFile> {
 }
 
 fn get_paste(id: String) -> Option<File> {
-	let p = PastePath::new(id.chars().take(3).collect());
+	let pid = match id.rfind('.')	{
+		Some(idx) => id[..idx].to_string(),
+		None => id
+	};
+
+	let p = PastePath::new(pid);
 
 	if Path::new(&p.del()).exists()  {
         return None
