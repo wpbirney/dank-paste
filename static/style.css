@@ -1,13 +1,13 @@
 @font-face {
     font-family: "Hermit";
-    src: url("/static/Hermit-bold.otf");
+    src: url("/static/fonts/Hermit-bold.otf");
     font-style: normal;
     font-weight: bold;
 }
 
 @font-face {
     font-family: "Hermit";
-    src: url("/static/Hermit-medium.otf");
+    src: url("/static/fonts/Hermit-medium.otf");
     font-style: normal;
     font-weight: normal;
 }
