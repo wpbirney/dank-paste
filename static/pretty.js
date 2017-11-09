@@ -4,8 +4,11 @@ function updateLang(reload)	{
 	var c = document.getElementById("code");
 	if(pick.value == "rust")	{
 		c.classList.add('lang-rust');
+	} else if (pick.value == "css") {
+		c.classList.add('lang-css');
 	} else {
 		c.classList.remove('lang-rust');
+		c.classList.remove('lang-css');
 	}
 	if(reload) {
 		document.location.reload();
