@@ -39,6 +39,6 @@ impl PasteId {
 	}
 	pub fn id(&self) -> String { self.id.clone() }
 	pub fn filename(&self) -> String { format!("upload/{}", self.id) }
-	pub fn url(&self) -> String { format!("https://ganja.ml/{}", self.id) }
-	pub fn source_url(&self) -> String { format!("https://ganja.ml/h/{}", self.id) }
+	pub fn url(&self) -> String { format!("{}/{}", ::URL, self.id) }
+	pub fn source_url(&self) -> String { format!("{}/h/{}", ::URL, self.id) }
 }
