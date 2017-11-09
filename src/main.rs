@@ -33,7 +33,8 @@ use rocket::response::NamedFile;
 use rocket_contrib::Template;
 use rocket_contrib::Json;
 
-static VERSION: &str = "dank-paste v0.1.0";
+const VERSION: &'static str = "dank-paste v0.1.0";
+const URL: &'static str = "https://ganja.ml";
 
 fn main() {
     if !Path::new("upload").exists()    {
