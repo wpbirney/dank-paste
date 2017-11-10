@@ -84,21 +84,22 @@ fn get_paste(id: String) -> Option<File> {
 
 #[get("/<id>")]
 fn retrieve(id: String) -> Option<File> {
-	get_paste(id)
+	get_paste(id.clone())
 }
 
 #[derive(Serialize)]
 struct PrettyCtx {
     content: String,
-	version: String
+	version: String,
+	id:	String
 }
 
 #[get("/h/<id>")]
 fn retrieve_pretty(id: String) -> Option<Template> {
-    let mut f = get_paste(id)?;
+    let mut f = get_paste(id.clone())?;
     let mut buf = String::new();
     f.read_to_string(&mut buf).ok()?;
-    Some(Template::render("pretty", PrettyCtx{ content: buf, version: VERSION.to_string() }))
+    Some(Template::render("pretty", PrettyCtx{ content: buf, version: VERSION.to_string(), id: id }))
 }
 
 #[derive(Serialize)]
