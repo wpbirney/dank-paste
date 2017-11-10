@@ -1,15 +1,35 @@
+/*
+	Handles keepn' shit pretty
+*/
 var pick = document.getElementById("lang-pick");
+var link = document.getElementById('link');
+var codebox = document.getElementById("code");
+
+var orig = link.href;
+var ID = orig.split('/').reverse()[0];
+var plugins = ['lang-rust', 'lang-css'];
+
+function removeAllPlugins()	{
+	for ( var i = 0; i < plugins.length; ++i )	{
+		codebox.classList.remove(plugins[i]);
+	}
+}
 
 function updateLang(reload)	{
-	var c = document.getElementById("code");
-	if(pick.value == "rust")	{
-		c.classList.add('lang-rust');
-	} else if (pick.value == "css") {
-		c.classList.add('lang-css');
-	} else {
-		c.classList.remove('lang-rust');
-		c.classList.remove('lang-css');
+	switch(pick.value)	{
+		case "rust":
+			codebox.classList.add('lang-rust');
+			link.href = orig + '?lang=rust';
+			break;
+		case "css":
+			codebox.classList.add('lang-css');
+			link.href = orig + '?lang=css';
+			break;
+		default:
+			removeAllPlugins();
+			break;
 	}
+
 	if(reload) {
 		document.location.reload();
 	}
@@ -25,8 +45,4 @@ updateLang(false);
 
 document.getElementById("lang-pick").addEventListener('change', function() {
 	updateLang(true);
-});
-
-document.getElementById('raw-btn').addEventListener('click', function() {
-	window.open('https://ganja.ml', '_blank');
 });
