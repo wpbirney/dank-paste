@@ -31,10 +31,6 @@ fn remove_old() {
     for path in fs::read_dir("upload").unwrap() {
         let path = path.unwrap();
 
-        if path.file_name().into_string().unwrap() == "readme" {
-            continue;
-        }
-
         let fp = path.path();
 		if let Some(ext) = fp.extension() {
 			let paste = PasteId::from_id(fp.file_stem().unwrap().to_str().unwrap()).unwrap();
