@@ -18,10 +18,12 @@ mod paste_dog;
 mod paste_id;
 mod paste_info;
 mod mpu;
+mod limiting;
 
 use paste_id::PasteId;
 use paste_info::PasteInfo;
 use mpu::MultipartUpload;
+use limiting::*;
 
 use std::path::{Path, PathBuf};
 use std::fs::{self, File};
@@ -46,8 +48,9 @@ fn main() {
     let r = routes![index, static_file, retrieve, retrieve_pretty, upload, upload_form];
 
     rocket::ignite()
-        .attach(Template::fairing())
-        .mount("/", r).launch();
+		.attach(Template::fairing())
+		.manage(Limiter::create_state())
+		.mount("/", r).launch();
 }
 
 #[derive(Serialize)]
@@ -116,11 +119,11 @@ struct UploadResponse {
 }
 
 #[post("/", data = "<paste>")]
-fn upload(paste: Data, info: PasteInfo) -> Option<Json<UploadResponse>> {
+fn upload(paste: Data, info: PasteInfo, _limit: LimitGuard) -> Option<Json<UploadResponse>> {
 	let id = PasteId::generate();
     paste.stream_to_file(Path::new(&id.filename())).unwrap();
     info.write_to_file(&format!("{}.{}", id.filename(), "json"));
-    Some(Json(UploadResponse{
+	Some(Json(UploadResponse{
 		id: id.id(),
 		expire: info.expire,
 		raw_url: id.url(),
@@ -129,7 +132,7 @@ fn upload(paste: Data, info: PasteInfo) -> Option<Json<UploadResponse>> {
 }
 
 #[post("/upload", data = "<paste>")]
-fn upload_form(paste: MultipartUpload, info: PasteInfo) -> Option<Json<UploadResponse>> {
+fn upload_form(paste: MultipartUpload, info: PasteInfo, _limit: LimitGuard) -> Option<Json<UploadResponse>> {
 	let id = PasteId::generate();
     paste.write_to_file(&id.filename());
     info.write_to_file(&format!("{}.{}", id.filename(), "json"));
