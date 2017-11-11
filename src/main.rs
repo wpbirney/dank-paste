@@ -30,7 +30,7 @@ use std::fs::{self, File};
 use std::io::prelude::*;
 
 use rocket::data::Data;
-use rocket::response::NamedFile;
+use rocket::response::{NamedFile, Redirect};
 
 use rocket_contrib::Template;
 use rocket_contrib::Json;
@@ -103,11 +103,15 @@ struct PrettyCtx {
 }
 
 #[get("/h/<id>")]
-fn retrieve_pretty(id: String) -> Option<Template> {
-    let mut f = get_paste(id.clone())?;
-    let mut buf = String::new();
-    f.read_to_string(&mut buf).ok()?;
-    Some(Template::render("pretty", PrettyCtx{ content: buf, version: VERSION.to_string(), id: id }))
+fn retrieve_pretty(id: String) -> Result<Template, Option<Redirect>> {
+	if let Some(mut f) = get_paste(id.clone()) {
+		let mut buf = String::new();
+		return match f.read_to_string(&mut buf) {
+			Ok(_) => Ok(Template::render("pretty", PrettyCtx{ content: buf, version: VERSION.to_string(), id: id })),
+			Err(_) => Err(Some(Redirect::to(&format!("{}/{}", URL, id))))
+		}
+	}
+	Err(None)
 }
 
 #[derive(Serialize)]
