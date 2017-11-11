@@ -77,17 +77,17 @@ fn get_paste(id: String) -> Option<File> {
 	let p = PasteId::from_id(&pid)?;
 
 	if Path::new(&p.del()).exists()  {
-        return None
+		return None
 	}
 
-    if Path::new(&p.json()).exists() {
-        let info = PasteInfo::load(&p.json());
-        if info.expire == 0 {
-            File::create(&p.del()).ok()?;
-        }
-    }
+	if Path::new(&p.json()).exists() {
+		let info = PasteInfo::load(&p.json());
+		if info.expire == 0 {
+			File::create(&p.del()).ok()?;
+		}
+	}
 
-    File::open(p.filename()).ok()
+	File::open(p.filename()).ok()
 }
 
 #[get("/<id>")]
@@ -97,7 +97,7 @@ fn retrieve(id: String) -> Option<File> {
 
 #[derive(Serialize)]
 struct PrettyCtx {
-    content: String,
+	content: String,
 	version: String,
 	id:	String
 }
