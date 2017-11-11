@@ -39,15 +39,15 @@ const VERSION: &'static str = "dank-paste v0.1.2";
 const URL: &'static str = "https://ganja.ml";
 
 fn main() {
-    if !Path::new("upload").exists()    {
-        fs::create_dir("upload").unwrap();
-    }
+	if !Path::new("upload").exists()    {
+		fs::create_dir("upload").unwrap();
+	}
 
-    let (_handle, _tx) = paste_dog::launch();
+	let (_handle, _tx) = paste_dog::launch();
 
-    let r = routes![index, static_file, retrieve, retrieve_pretty, upload, upload_form];
+	let r = routes![index, static_file, retrieve, retrieve_pretty, upload, upload_form];
 
-    rocket::ignite()
+	rocket::ignite()
 		.attach(Template::fairing())
 		.manage(Limiter::create_state())
 		.mount("/", r).launch();
@@ -60,12 +60,12 @@ struct IndexCtx {
 
 #[get("/")]
 fn index() -> Template  {
-    Template::render("index", IndexCtx{ version: VERSION.to_string() })
+	Template::render("index", IndexCtx{ version: VERSION.to_string() })
 }
 
 #[get("/static/<path..>")]
 fn static_file(path: PathBuf) -> Option<NamedFile> {
-    NamedFile::open(Path::new("static/").join(path)).ok()
+	NamedFile::open(Path::new("static/").join(path)).ok()
 }
 
 fn get_paste(id: String) -> Option<File> {
@@ -125,8 +125,8 @@ struct UploadResponse {
 #[post("/", data = "<paste>")]
 fn upload(paste: Data, info: PasteInfo, _limit: LimitGuard) -> Option<Json<UploadResponse>> {
 	let id = PasteId::generate();
-    paste.stream_to_file(Path::new(&id.filename())).unwrap();
-    info.write_to_file(&format!("{}.{}", id.filename(), "json"));
+	paste.stream_to_file(Path::new(&id.filename())).unwrap();
+	info.write_to_file(&format!("{}.{}", id.filename(), "json"));
 	Some(Json(UploadResponse{
 		id: id.id(),
 		expire: info.expire,
@@ -138,8 +138,8 @@ fn upload(paste: Data, info: PasteInfo, _limit: LimitGuard) -> Option<Json<Uploa
 #[post("/upload", data = "<paste>")]
 fn upload_form(paste: MultipartUpload, info: PasteInfo, _limit: LimitGuard) -> Option<Json<UploadResponse>> {
 	let id = PasteId::generate();
-    paste.write_to_file(&id.filename());
-    info.write_to_file(&format!("{}.{}", id.filename(), "json"));
+	paste.write_to_file(&id.filename());
+	info.write_to_file(&format!("{}.{}", id.filename(), "json"));
 	Some(Json(UploadResponse{
 		id: id.id(),
 		expire: info.expire,
