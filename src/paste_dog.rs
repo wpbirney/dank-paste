@@ -9,7 +9,8 @@ use std::time::Duration;
 use std::thread::{self, JoinHandle};
 use std::sync::mpsc::{channel, Receiver, Sender};
 
-use paste_info::{PasteInfo, PastePath};
+use paste_info::PasteInfo;
+use paste_id::PasteId;
 
 pub static MAX_AGE: u64 = 259200;
 
@@ -36,20 +37,20 @@ fn remove_old() {
 
         let fp = path.path();
 		if let Some(ext) = fp.extension() {
-			let paths = PastePath::new(fp.file_stem().unwrap().to_str().unwrap().to_string());
+			let paste = PasteId::from_id(fp.file_stem().unwrap().to_str().unwrap()).unwrap();
 			if ext == "del" {
-				paths.delete_all();
+				paste.delete_all();
 			} else if ext == "json" {
 				let age = get_age(&fp).unwrap();
 				let info = PasteInfo::load(fp.to_str().unwrap());
 
 				if info.expire == 0 {
 					if age > MAX_AGE {
-						paths.delete_all();
+						paste.delete_all();
 					}
 				} else {
 					if age > info.expire {
-						paths.delete_all();
+						paste.delete_all();
 					}
 				}
 			}

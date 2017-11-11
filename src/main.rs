@@ -20,7 +20,7 @@ mod paste_info;
 mod mpu;
 
 use paste_id::PasteId;
-use paste_info::{PasteInfo, PastePath};
+use paste_info::PasteInfo;
 use mpu::MultipartUpload;
 
 use std::path::{Path, PathBuf};
@@ -66,7 +66,7 @@ fn get_paste(id: String) -> Option<File> {
 		None => id
 	};
 
-	let p = PastePath::new(pid);
+	let p = PasteId::from_id(&pid)?;
 
 	if Path::new(&p.del()).exists()  {
         return None
@@ -75,11 +75,11 @@ fn get_paste(id: String) -> Option<File> {
     if Path::new(&p.json()).exists() {
         let info = PasteInfo::load(&p.json());
         if info.expire == 0 {
-            File::create(&p.del()).unwrap();
+            File::create(&p.del()).ok()?;
         }
     }
 
-    File::open(p.data()).ok()
+    File::open(p.filename()).ok()
 }
 
 #[get("/<id>")]

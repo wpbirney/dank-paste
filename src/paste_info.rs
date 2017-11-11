@@ -1,4 +1,4 @@
-use std::fs::{self, File};
+use std::fs::File;
 
 use rocket::request::{self, Request, FromRequest};
 use rocket::Outcome;
@@ -37,23 +37,4 @@ impl <'a,'r>FromRequest<'a,'r> for PasteInfo  {
 		}
 		Outcome::Success(PasteInfo::new(age))
     }
-}
-
-pub struct PastePath(String);
-
-impl PastePath {
-	pub fn new(id: String) -> PastePath {
-		PastePath(id)
-	}
-
-	pub fn data(&self) -> String { format!("upload/{}", &self.0) }
-	pub fn json(&self) -> String { format!("upload/{}.json", &self.0) }
-	pub fn del(&self) -> String { format!("upload/{}.del", &self.0) }
-
-	pub fn delete_all(&self)	{
-		println!("deleting paste {}", self.0);
-	    fs::remove_file(self.data()).unwrap_or(());
-	    fs::remove_file(self.json()).unwrap_or(());
-	    fs::remove_file(self.del()).unwrap_or(());
-	}
 }

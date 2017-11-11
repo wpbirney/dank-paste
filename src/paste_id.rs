@@ -1,6 +1,7 @@
 use rand::{self,Rng};
 
 use std::path::Path;
+use std::fs;
 
 /// Table to retrieve base62 values from.
 const BASE62: &'static [u8] = b"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -37,8 +38,26 @@ impl PasteId {
 		}
 		PasteId{ id: id }
 	}
+
+	pub fn from_id(id: &str) -> Option<PasteId>	{
+		match check_for_id(id) {
+			true => Some(PasteId{ id: id.to_string() }),
+			false => None
+		}
+	}
+
 	pub fn id(&self) -> String { self.id.clone() }
 	pub fn filename(&self) -> String { format!("upload/{}", self.id) }
 	pub fn url(&self) -> String { format!("{}/{}", ::URL, self.id) }
 	pub fn source_url(&self) -> String { format!("{}/h/{}", ::URL, self.id) }
+
+	pub fn json(&self) -> String { format!("upload/{}.json", &self.id) }
+	pub fn del(&self) -> String { format!("upload/{}.del", &self.id) }
+
+	pub fn delete_all(&self)	{
+		println!("deleting paste {}", self.id);
+	    fs::remove_file(self.filename()).unwrap_or(());
+	    fs::remove_file(self.json()).unwrap_or(());
+	    fs::remove_file(self.del()).unwrap_or(());
+	}
 }
