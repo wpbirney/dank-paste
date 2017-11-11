@@ -34,3 +34,7 @@ location / {
 ### Configuration
 
 All server configuration is handled thru the default rocket config Rocket.toml
+
+### SSL
+You can configure dank-paste to use tls/ssl directly thru Rocket.toml (see rocket documentation)
+The recommend way is to configure nginx for tls/ssl and proxy_pass it to dank-paste
