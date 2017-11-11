@@ -3,7 +3,7 @@ use rocket::Outcome;
 use rocket::State;
 use rocket::http::Status;
 
-use std::time::{Instant, Duration};
+use std::time::Instant;
 use std::collections::HashMap;
 use std::sync::RwLock;
 
