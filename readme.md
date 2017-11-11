@@ -2,6 +2,8 @@
 
 The World's Dankest Paste Bin!
 
+If *anyone* would like to write this readme feel free!
+
 ### Quick-Start
 
 dank-paste requires rocket, therefor currently requiring a nightly rust compiler,
@@ -21,9 +23,11 @@ The vanilla build is currently hosted at [ganja.ml](https://ganja.ml), so go che
 ### Deployment
 
 When deploying to a production server it is recommended to put dank-paste behind nginx using proxy_pass
+Its also recommended when using nginx to use proxy_set_header, otherwise the fuckn' rate limiting wont work
 ```
 location / {
     		proxy_pass http://127.0.0.1:{PORT NUMBER FOR dank-paste};
+			proxy_set_header real-ip $remote_addr;
 }
 ```
 
