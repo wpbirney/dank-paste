@@ -50,9 +50,14 @@ fn main() {
         .mount("/", r).launch();
 }
 
+#[derive(Serialize)]
+struct IndexCtx {
+	version: String
+}
+
 #[get("/")]
-fn index() -> Option<NamedFile>  {
-    NamedFile::open("static/index.html").ok()
+fn index() -> Template  {
+    Template::render("index", IndexCtx{ version: VERSION.to_string() })
 }
 
 #[get("/static/<path..>")]

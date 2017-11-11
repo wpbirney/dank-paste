@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>World's Dankest Pastebin</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="dp-container">
+	<h1>dank-paste</h1>
+	<div id="paste-url">
+	<ul id="paste-url-list"></ul>
+	<button id="url-clear-btn" type="button">Clear URLs</button>
+	</div>
+	<h2>Upload by File</h2>
+	<div class="file-wrapper"><input id="upload-file" type="file"></div>
+	<button id="upload-btn" type="button">Upload</button>
+	<hr />
+	<h2>Upload by Paste</h2>
+	<textarea id="paste-box" placeholder="Paste some text here"></textarea>
+	<button id="paste-btn" type="button">Paste Text</button>
+	<label for="expire">Expire In:</label>
+	<select id="expire">
+		<option value="0">one-shot</option>
+		<option value="60">1 minute</option>
+		<option value="1800">30 minutes</option>
+		<option value="3600">1 hour</option>
+		<option value="86400" selected>1 day</option>
+		<option value="172800">2 days</option>
+		<option value="259200">3 days</option>
+	</select>
+	<p>64MB limit, don't be a jew</p>
+	<hr class="small" />
+	<p class="large">dank-paste also works using curl</p>
+	<button id="theme-btn">Change Theme</button>
+	<label style='text-align:center'>{{version}}</label>
+</div>
+<script type="text/javascript" src="/static/dank.js"></script>
+</body>
+</html>
