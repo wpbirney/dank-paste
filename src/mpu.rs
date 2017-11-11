@@ -6,6 +6,7 @@ use rocket::data::{self, FromData};
 use rocket::Data;
 use rocket::Outcome;
 use rocket::request::Request;
+use rocket::http::Status;
 use multipart::server::Multipart;
 
 pub struct MultipartUpload  {
@@ -19,19 +20,27 @@ impl MultipartUpload    {
 	}
 }
 
+fn get_multipart(request: &Request, data: Data) -> Option< Multipart<Cursor<Vec<u8>>> > {
+	// All of these errors should be reported
+	let ct = request.headers().get_one("Content-Type")?;
+	let idx = ct.find("boundary=")?;
+	let boundary = &ct[(idx + "boundary=".len())..];
+
+	let mut d = Vec::new();
+	data.stream_to(&mut d).ok()?;
+
+	Some(Multipart::with_body(Cursor::new(d), boundary))
+}
+
 impl FromData for MultipartUpload   {
 	type Error = ();
 
 	fn from_data(request: &Request, data: Data) -> data::Outcome<Self, Self::Error> {
-		// All of these errors should be reported
-		let ct = request.headers().get_one("Content-Type").expect("no content-type");
-		let idx = ct.find("boundary=").expect("no boundary");
-		let boundary = &ct[(idx + "boundary=".len())..];
 
-		let mut d = Vec::new();
-		data.stream_to(&mut d).expect("Unable to read");
-
-		let mut mp = Multipart::with_body(Cursor::new(d), boundary);
+		let mut mp = match get_multipart(&request, data)	{
+			Some(m) => m,
+			None => return Outcome::Failure((Status::raw(421), ()))
+		};
 
 		// Custom implementation parts
 		let mut file = None;
@@ -48,12 +57,8 @@ impl FromData for MultipartUpload   {
 			}
 		}).expect("Unable to iterate");
 
-		let v = MultipartUpload {
+		Outcome::Success(MultipartUpload {
 			file: file.expect("file not set"),
-		};
-
-		// End custom
-
-		Outcome::Success(v)
+		})
 	}
 }
