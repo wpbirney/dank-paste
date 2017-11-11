@@ -74,8 +74,8 @@ impl Limiter {
 pub struct LimitGuard();
 
 impl <'a,'r>FromRequest<'a,'r> for LimitGuard  {
-    type Error = ();
-    fn from_request(request: &'a Request<'r>) -> request::Outcome<LimitGuard, ()>  {
+	type Error = ();
+	fn from_request(request: &'a Request<'r>) -> request::Outcome<LimitGuard, ()>  {
 		let sender = SenderInfo::from_request(&request);
 		let state = request.guard::<State<RwLock<Limiter>>>()?;
 
