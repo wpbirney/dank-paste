@@ -26,8 +26,8 @@ When deploying to a production server it is recommended to put dank-paste behind
 Its also recommended when using nginx to use proxy_set_header, otherwise the fuckn' rate limiting wont work
 ```
 location / {
-    		proxy_pass http://127.0.0.1:{PORT NUMBER FOR dank-paste};
-			proxy_set_header real-ip $remote_addr;
+	proxy_pass http://127.0.0.1:{PORT NUMBER FOR dank-paste};
+	proxy_set_header real-ip $remote_addr;
 }
 ```
 
