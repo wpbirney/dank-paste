@@ -35,7 +35,7 @@ use rocket::response::NamedFile;
 use rocket_contrib::Template;
 use rocket_contrib::Json;
 
-const VERSION: &'static str = "dank-paste v0.1.1";
+const VERSION: &'static str = "dank-paste v0.1.2";
 const URL: &'static str = "https://ganja.ml";
 
 fn main() {
