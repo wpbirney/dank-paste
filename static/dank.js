@@ -106,6 +106,8 @@ pasteButton.addEventListener('click', function() {
 					pasteUrlContainer.style.display = 'flex';
 					addUrlEntry(this.responseText);
                     p.value = "";
+				} else {
+					alert("Upload failed!");
 				}
 			}
 		};
