@@ -15,7 +15,7 @@ use paste_id::PasteId;
 pub const MAX_AGE: u64 = 259200;
 
 //seconds to pause between cycles
-const INTERVAL: u64 = 1;
+const INTERVAL: u64 = 10;
 
 //spawn the paste_dog thread
 pub fn launch() -> JoinHandle<()> {
