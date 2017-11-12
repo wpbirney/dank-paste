@@ -1,6 +1,6 @@
 /*
     spawns a thread that cycles over the uploaded files and deletes them,
-    gives access to a tx channel and JoinHandle
+    gives access to a JoinHandle
 */
 
 use std::fs;
@@ -11,8 +11,13 @@ use std::thread::{self, JoinHandle};
 use paste_info::PasteInfo;
 use paste_id::PasteId;
 
-pub static MAX_AGE: u64 = 259200;
+//maximum allowed age in seconds
+pub const MAX_AGE: u64 = 259200;
 
+//seconds to pause between cycles
+const INTERVAL: u64 = 1;
+
+//spawn the paste_dog thread
 pub fn launch() -> JoinHandle<()> {
     let handle = thread::spawn(move || {
         paste_dog();
@@ -20,12 +25,29 @@ pub fn launch() -> JoinHandle<()> {
     handle
 }
 
+//get the age of the file at path in seconds
 fn get_age(path: &Path) -> Option<u64> {
 	let modified = path.metadata().ok()?.modified().ok()?;
 	Some(modified.elapsed().ok()?.as_secs())
 }
 
-fn remove_old() {
+//delete the paste at fp if expired
+fn delete_if_expired(fp: &Path, paste: &PasteId)	{
+	let age = get_age(&fp).unwrap();
+	let info = PasteInfo::load(fp.to_str().unwrap());
+
+	if info.expire == 0 {
+		if age > MAX_AGE {
+			paste.delete_all();
+		}
+	} else {
+		if age > info.expire {
+			paste.delete_all();
+		}
+	}
+}
+
+fn walk() {
 	for path in fs::read_dir("upload").unwrap() {
 		let path = path.unwrap();
 
@@ -36,18 +58,7 @@ fn remove_old() {
 			if ext == "del" {
 				paste.delete_all();
 			} else if ext == "json" {
-				let age = get_age(&fp).unwrap();
-				let info = PasteInfo::load(fp.to_str().unwrap());
-
-				if info.expire == 0 {
-					if age > MAX_AGE {
-						paste.delete_all();
-					}
-				} else {
-					if age > info.expire {
-						paste.delete_all();
-					}
-				}
+				delete_if_expired(&fp, &paste);
 			}
 		}
 	}
@@ -55,7 +66,7 @@ fn remove_old() {
 
 fn paste_dog()  {
 	loop {
-		thread::sleep(Duration::from_secs(5));
-		remove_old();
+		thread::sleep(Duration::from_secs(INTERVAL));
+		walk();
 	}
 }
