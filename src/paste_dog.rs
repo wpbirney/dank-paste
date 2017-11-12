@@ -7,19 +7,17 @@ use std::fs;
 use std::path::Path;
 use std::time::Duration;
 use std::thread::{self, JoinHandle};
-use std::sync::mpsc::{channel, Receiver, Sender};
 
 use paste_info::PasteInfo;
 use paste_id::PasteId;
 
 pub static MAX_AGE: u64 = 259200;
 
-pub fn launch() -> (JoinHandle<()>, Sender<u8>)  {
-    let (tx, rx) = channel::<u8>();
+pub fn launch() -> JoinHandle<()> {
     let handle = thread::spawn(move || {
-        paste_dog(rx);
+        paste_dog();
     });
-    (handle, tx)
+    handle
 }
 
 fn get_age(path: &Path) -> Option<u64> {
@@ -28,10 +26,11 @@ fn get_age(path: &Path) -> Option<u64> {
 }
 
 fn remove_old() {
-    for path in fs::read_dir("upload").unwrap() {
-        let path = path.unwrap();
+	for path in fs::read_dir("upload").unwrap() {
+		let path = path.unwrap();
 
-        let fp = path.path();
+		let fp = path.path();
+
 		if let Some(ext) = fp.extension() {
 			let paste = PasteId::from_id(fp.file_stem().unwrap().to_str().unwrap()).unwrap();
 			if ext == "del" {
@@ -51,19 +50,12 @@ fn remove_old() {
 				}
 			}
 		}
-    }
+	}
 }
 
-fn paste_dog(rx: Receiver<u8>)  {
-    loop {
-        match rx.recv_timeout(Duration::from_secs(5))   {
-            Ok(val) => {
-                if val == 111   {
-                    break;
-                }
-            }
-            Err(_) => thread::sleep(Duration::from_secs(5))
-        }
-        remove_old();
-    }
+fn paste_dog()  {
+	loop {
+		thread::sleep(Duration::from_secs(5));
+		remove_old();
+	}
 }

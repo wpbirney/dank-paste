@@ -43,7 +43,7 @@ fn main() {
 		fs::create_dir("upload").unwrap();
 	}
 
-	let (_handle, _tx) = paste_dog::launch();
+	let _handle = paste_dog::launch();
 
 	let r = routes![index, static_file, retrieve, retrieve_pretty, upload, upload_form];
 
