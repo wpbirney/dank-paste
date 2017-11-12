@@ -15,8 +15,23 @@ pub fn generate_id(size: usize) -> String {
     id
 }
 
-fn check_for_id(id: &str) -> bool {
-	Path::new(&format!("upload/{}", id)).exists()
+fn check_for_id(root: &str, id: &str) -> bool {
+	Path::new(&format!("{}/{}", root, id)).exists()
+}
+
+fn generate_unused(root: &str) -> String {
+	let mut len = 2;
+	let mut tries = 0;
+	let mut id = generate_id(len);
+	while check_for_id(&root, &id)	{
+		if tries > 5 {
+			len += 1;
+			tries = 0;
+		}
+		id = generate_id(len);
+		tries += 1;
+	}
+	id
 }
 
 pub struct PasteId {
@@ -25,22 +40,11 @@ pub struct PasteId {
 
 impl PasteId {
 	pub fn generate() -> PasteId {
-		let mut len = 2;
-		let mut tries = 0;
-		let mut id = generate_id(len);
-		while check_for_id(&id)	{
-			if tries > 5 {
-				len += 1;
-				tries = 0;
-			}
-			id = generate_id(len);
-			tries += 1;
-		}
-		PasteId{ id: id }
+		PasteId{ id: generate_unused("upload") }
 	}
 
 	pub fn from_id(id: &str) -> Option<PasteId>	{
-		match check_for_id(id) {
+		match check_for_id("upload", id) {
 			true => Some(PasteId{ id: id.to_string() }),
 			false => None
 		}
