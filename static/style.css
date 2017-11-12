@@ -121,7 +121,17 @@ body {
 }
 .dp-container #paste-url a {
 	color: grey;
+	text-decoration: none;
+	color: black;
+	background-color: #4caf50;
+	border: 1px solid green;
+	border-radius: 0.25em;
+	padding: 0.10em;
 }
+.dp-container a:hover {
+	box-shadow: 0 4px 8px 0 rgba(0,255,0,0.2), 0 3px 10px 0 rgba(0,255,0,0.19);
+}
+
 .dp-container #paste-url button {
     background-color: #f44336;
 }
