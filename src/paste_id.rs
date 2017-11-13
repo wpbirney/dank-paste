@@ -34,34 +34,59 @@ fn generate_unused(root: &str) -> String {
 	id
 }
 
+pub trait DankId where Self: Sized	{
+	fn generate() -> Self;
+	fn from_id(id: &str) -> Option<Self>;
+	fn id(&self) -> String;
+	fn filename(&self) -> String;
+	fn json(&self) -> String;
+	fn del(&self) -> String;
+	fn delete_all(&self);
+}
+
+macro_rules! dankid_derive {
+	($root:expr, $t:tt) => {
+		fn generate() -> $t {
+			$t { id: generate_unused($root) }
+		}
+
+		fn from_id(id: &str) -> Option<$t>	{
+			match check_for_id($root, id) {
+				true => Some($t { id: id.to_string() }),
+				false => None
+			}
+		}
+		fn id(&self) -> String { self.id.clone() }
+		fn filename(&self) -> String { format!("{}/{}", $root, self.id) }
+		fn json(&self) -> String { format!("{}/{}.json", $root, &self.id) }
+		fn del(&self) -> String { format!("{}/{}.del", $root, &self.id) }
+		fn delete_all(&self)	{
+		    fs::remove_file(self.filename()).unwrap_or(());
+		    fs::remove_file(self.json()).unwrap_or(());
+		    fs::remove_file(self.del()).unwrap_or(());
+		}
+	};
+}
+
+
 pub struct PasteId {
 	id: String
 }
 
 impl PasteId {
-	pub fn generate() -> PasteId {
-		PasteId{ id: generate_unused("upload") }
-	}
-
-	pub fn from_id(id: &str) -> Option<PasteId>	{
-		match check_for_id("upload", id) {
-			true => Some(PasteId{ id: id.to_string() }),
-			false => None
-		}
-	}
-
-	pub fn id(&self) -> String { self.id.clone() }
-	pub fn filename(&self) -> String { format!("upload/{}", self.id) }
+	//paste specifics
 	pub fn url(&self) -> String { format!("{}/{}", ::URL, self.id) }
 	pub fn source_url(&self) -> String { format!("{}/h/{}", ::URL, self.id) }
+}
 
-	pub fn json(&self) -> String { format!("upload/{}.json", &self.id) }
-	pub fn del(&self) -> String { format!("upload/{}.del", &self.id) }
+impl DankId for PasteId {
+	dankid_derive!("upload", PasteId);
+}
 
-	pub fn delete_all(&self)	{
-		println!("deleting paste {}", self.id);
-	    fs::remove_file(self.filename()).unwrap_or(());
-	    fs::remove_file(self.json()).unwrap_or(());
-	    fs::remove_file(self.del()).unwrap_or(());
-	}
+pub struct UrlId {
+	id: String
+}
+
+impl DankId for UrlId {
+	dankid_derive!("shorts", UrlId);
 }

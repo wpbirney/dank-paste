@@ -9,7 +9,7 @@ use std::time::Duration;
 use std::thread::{self, JoinHandle};
 
 use paste_info::PasteInfo;
-use paste_id::PasteId;
+use paste_id::{DankId,PasteId};
 
 //maximum allowed age in seconds
 pub const MAX_AGE: u64 = 259200;

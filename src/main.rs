@@ -20,7 +20,7 @@ mod paste_info;
 mod mpu;
 mod limiting;
 
-use paste_id::PasteId;
+use paste_id::{DankId,PasteId};
 use paste_info::PasteInfo;
 use mpu::MultipartUpload;
 use limiting::*;
@@ -38,14 +38,23 @@ use rocket_contrib::Json;
 const VERSION: &'static str = "dank-paste v0.1.2";
 const URL: &'static str = "https://ganja.ml";
 
-fn main() {
-	if !Path::new("upload").exists()    {
-		fs::create_dir("upload").unwrap();
+fn init_dir(path: &str)	{
+	if !Path::new(path).exists()    {
+		fs::create_dir(path).unwrap();
 	}
+}
+
+fn initialize() {
+	init_dir("upload");
+	init_dir("shorts");
+}
+
+fn main() {
+	initialize();
 
 	let _handle = paste_dog::launch();
 
-	let r = routes![index, static_file, retrieve, retrieve_pretty, upload, upload_form];
+	let r = routes![index, static_file, retrieve, retrieve_pretty, upload, upload_form, create_url];
 
 	rocket::ignite()
 		.attach(Template::fairing())
@@ -146,4 +155,11 @@ fn upload_form(paste: MultipartUpload, info: PasteInfo, _limit: LimitGuard) -> O
 		raw_url: id.url(),
 		source_url: id.source_url()
 	}))
+}
+
+#[post("/shorty", data = "<url>")]
+fn create_url(url: String, info: PasteInfo) -> String {
+	let id = PasteId::generate();
+
+	url
 }
