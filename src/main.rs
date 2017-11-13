@@ -21,7 +21,7 @@ mod mpu;
 mod limiting;
 
 use id::{DankId,PasteId,UrlId};
-use paste_info::{PasteInfo, UrlInfo};
+use paste_info::{PasteInfo, UrlInfo, HostInfo};
 use mpu::MultipartUpload;
 use limiting::*;
 
@@ -36,7 +36,12 @@ use rocket_contrib::Template;
 use rocket_contrib::Json;
 
 const VERSION: &'static str = "dank-paste v0.1.2";
-const URL: &'static str = "https://ganja.ml";
+
+pub fn proto() -> String {
+	if cfg!(feature = "debug") {
+		return "http".to_string()
+	} else	{ "https".to_string() }
+}
 
 fn init_dir(path: &str)	{
 	if !Path::new(path).exists()    {
@@ -113,12 +118,12 @@ struct PrettyCtx {
 }
 
 #[get("/h/<id>")]
-fn retrieve_pretty(id: String) -> Result<Template, Option<Redirect>> {
+fn retrieve_pretty(id: String, host: HostInfo) -> Result<Template, Option<Redirect>> {
 	if let Some(mut f) = get_paste(id.clone()) {
 		let mut buf = String::new();
 		return match f.read_to_string(&mut buf) {
 			Ok(_) => Ok(Template::render("pretty", PrettyCtx{ content: buf, version: VERSION.to_string(), id: id })),
-			Err(_) => Err(Some(Redirect::to(&format!("{}/{}", URL, id))))
+			Err(_) => Err(Some(Redirect::to(&format!("{}/{}", host.host, id))))
 		}
 	}
 	Err(None)
@@ -133,37 +138,37 @@ struct UploadResponse {
 }
 
 #[post("/", data = "<paste>")]
-fn upload(paste: Data, info: PasteInfo, _limit: LimitGuard) -> Option<Json<UploadResponse>> {
+fn upload(paste: Data, info: PasteInfo, host: HostInfo, _limit: LimitGuard) -> Option<Json<UploadResponse>> {
 	let id = PasteId::generate();
 	paste.stream_to_file(Path::new(&id.filename())).unwrap();
 	info.write_to_file(&format!("{}.{}", id.filename(), "json"));
 	Some(Json(UploadResponse{
 		id: id.id(),
 		expire: info.expire,
-		raw_url: id.url(),
-		source_url: id.source_url()
+		raw_url: id.url(&host.host),
+		source_url: id.source_url(&host.host)
 	}))
 }
 
 #[post("/upload", data = "<paste>")]
-fn upload_form(paste: MultipartUpload, info: PasteInfo, _limit: LimitGuard) -> Option<Json<UploadResponse>> {
+fn upload_form(paste: MultipartUpload, info: PasteInfo, host: HostInfo, _limit: LimitGuard) -> Option<Json<UploadResponse>> {
 	let id = PasteId::generate();
 	paste.write_to_file(&id.filename());
 	info.write_to_file(&format!("{}.{}", id.filename(), "json"));
 	Some(Json(UploadResponse{
 		id: id.id(),
 		expire: info.expire,
-		raw_url: id.url(),
-		source_url: id.source_url()
+		raw_url: id.url(&host.host),
+		source_url: id.source_url(&host.host)
 	}))
 }
 
 #[post("/shorty", data = "<url>")]
-fn create_url(url: Json<UrlInfo>) -> String {
+fn create_url(url: Json<UrlInfo>, host: HostInfo) -> String {
 	let id = UrlId::generate();
 	let info = url.into_inner();
 	info.write_to_file(&id.filename());
-	format!("{}", id.url())
+	id.url(&host.host)
 }
 
 #[get("/s/<id>")]

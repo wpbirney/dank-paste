@@ -16,3 +16,6 @@ serde_derive = "*"
 version = "*"
 default-features = false
 features = ["handlebars_templates", "json"]
+
+[features]
+debug = []

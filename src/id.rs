@@ -75,8 +75,8 @@ pub struct PasteId {
 
 impl PasteId {
 	//paste specifics
-	pub fn url(&self) -> String { format!("{}/{}", ::URL, self.id) }
-	pub fn source_url(&self) -> String { format!("{}/h/{}", ::URL, self.id) }
+	pub fn url(&self, host: &str) -> String { format!("{}://{}/{}", ::proto(), host, self.id) }
+	pub fn source_url(&self, host: &str) -> String { format!("{}://{}/h/{}", ::proto(), host, self.id) }
 }
 
 impl DankId for PasteId {
@@ -88,7 +88,7 @@ pub struct UrlId {
 }
 
 impl UrlId {
-	pub fn url(&self) -> String { format!("{}/s/{}", ::URL, self.id) }
+	pub fn url(&self, host: &str) -> String { format!("{}://{}/s/{}", ::proto(), host, self.id) }
 }
 
 impl DankId for UrlId {
