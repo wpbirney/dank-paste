@@ -15,12 +15,12 @@ extern crate serde_derive;
 extern crate serde_json;
 
 mod paste_dog;
-mod paste_id;
+mod id;
 mod paste_info;
 mod mpu;
 mod limiting;
 
-use paste_id::{DankId,PasteId};
+use id::{DankId,PasteId};
 use paste_info::PasteInfo;
 use mpu::MultipartUpload;
 use limiting::*;
