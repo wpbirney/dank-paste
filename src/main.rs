@@ -20,8 +20,8 @@ mod paste_info;
 mod mpu;
 mod limiting;
 
-use id::{DankId,PasteId};
-use paste_info::PasteInfo;
+use id::{DankId,PasteId,UrlId};
+use paste_info::{PasteInfo, UrlInfo};
 use mpu::MultipartUpload;
 use limiting::*;
 
@@ -54,7 +54,8 @@ fn main() {
 
 	let _handle = paste_dog::launch();
 
-	let r = routes![index, static_file, retrieve, retrieve_pretty, upload, upload_form, create_url];
+	let r = routes![index, static_file, retrieve, retrieve_pretty,
+					upload, upload_form, create_url, redirect_short];
 
 	rocket::ignite()
 		.attach(Template::fairing())
@@ -158,8 +159,16 @@ fn upload_form(paste: MultipartUpload, info: PasteInfo, _limit: LimitGuard) -> O
 }
 
 #[post("/shorty", data = "<url>")]
-fn create_url(url: String, info: PasteInfo) -> String {
-	let id = PasteId::generate();
+fn create_url(url: Json<UrlInfo>) -> String {
+	let id = UrlId::generate();
+	let info = url.into_inner();
+	info.write_to_file(&id.filename());
+	format!("{}", id.url())
+}
 
-	url
+#[get("/s/<id>")]
+fn redirect_short(id: String) -> Redirect {
+	let i = UrlId::from_id(&id).unwrap();
+	let info = UrlInfo::load(&i.filename());
+	Redirect::to(&info.target)
 }
