@@ -4,6 +4,8 @@ The World's Dankest Paste Bin!
 
 If *anyone* would like to write this readme feel free!
 
+irc channel #dank-paste @ blackbeard420.me:6667
+
 ### Quick-Start
 
 dank-paste requires rocket, therefor currently requiring a nightly rust compiler,
