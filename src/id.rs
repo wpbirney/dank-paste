@@ -87,6 +87,10 @@ pub struct UrlId {
 	id: String
 }
 
+impl UrlId {
+	pub fn url(&self) -> String { format!("{}/s/{}", ::URL, self.id) }
+}
+
 impl DankId for UrlId {
 	dankid_derive!("shorts", UrlId);
 }
