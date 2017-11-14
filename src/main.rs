@@ -16,12 +16,12 @@ extern crate serde_json;
 
 mod paste_dog;
 mod id;
-mod paste_info;
+mod info;
 mod mpu;
 mod limiting;
 
 use id::{DankId,PasteId,UrlId};
-use paste_info::{PasteInfo, UrlInfo, HostInfo};
+use info::{PasteInfo, UrlInfo, HostInfo};
 use mpu::MultipartUpload;
 use limiting::*;
 
