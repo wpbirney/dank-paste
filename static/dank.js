@@ -93,7 +93,7 @@ uploadButton.addEventListener('click', function() {
 					//display url list, append url
 					pasteUrlContainer.style.display = 'flex';
 					addUrlEntry(this.responseText);
-				} else if(this.status = 429) {
+				} else if(this.status == 429) {
 					alert("quit being a jew and wait a few seconds");
 				} else {
 					alert("Upload failed!");
@@ -120,7 +120,7 @@ pasteButton.addEventListener('click', function() {
 					pasteUrlContainer.style.display = 'flex';
 					addUrlEntry(this.responseText);
                     p.value = "";
-				} else if(this.status = 429) {
+				} else if(this.status == 429) {
 					alert("quit being a jew and wait a few seconds");
 				} else {
 					alert("Upload failed!");
@@ -146,7 +146,7 @@ submitUrl.addEventListener('click', function() {
 					pasteUrlContainer.style.display = 'flex';
 					addShortUrlEntry(this.responseText, urlentry.value);
 					urlentry.value = "";
-				} else if(this.status = 429) {
+				} else if(this.status == 429) {
 					alert("quit being a jew and wait a few seconds");
 				} else {
 					alert("Upload failed!");
