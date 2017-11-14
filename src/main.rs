@@ -130,7 +130,9 @@ fn retrieve_pretty(id: String, host: HostInfo) -> Result<Template, Option<Redire
 		let mut buf = String::new();
 		return match f.read_to_string(&mut buf) {
 			Ok(_) => Ok(Template::render("pretty", PrettyCtx{ content: buf, version: VERSION.to_string(), id: id })),
-			Err(_) => Err(Some(Redirect::to(&format!("{}/{}", host.host, id))))
+			Err(_) => {
+				Err(Some(Redirect::to(&format!("{}://{}/{}", proto(), host.host, id))))
+			}
 		}
 	}
 	Err(None)
