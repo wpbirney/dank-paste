@@ -37,6 +37,7 @@ use rocket_contrib::Template;
 use rocket_contrib::Json;
 
 const VERSION: &'static str = "dank-paste v0.2.0";
+const LOG_PRE: &'static str = "[dank]: ";
 
 pub fn proto() -> String {
 	match args().nth(1) {
@@ -48,6 +49,10 @@ pub fn proto() -> String {
 		},
 		None => "https".to_string()
 	}
+}
+
+pub fn dank_log(msg: &str)	{
+	println!("{} {}", LOG_PRE, msg);
 }
 
 fn init_dir(path: &str)	{

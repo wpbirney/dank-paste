@@ -8,25 +8,50 @@ use std::collections::HashMap;
 use std::sync::RwLock;
 
 pub struct SenderInfo	{
-	pub ip: String,
+	pub addr: String,
 	pub time: Instant
 }
 
 impl SenderInfo {
 	pub fn from_request(req: &Request) -> SenderInfo {
-		let ip = match req.headers().get_one("real-ip")	{
+		let addr = match req.headers().get_one("real-ip")	{
 			Some(x)	=> x.to_string(),
 			None => req.remote().unwrap().ip().to_string()
 		};
 		SenderInfo{
-			ip: ip,
+			addr: addr,
 			time: Instant::now()
 		}
 	}
 }
 
+const INTERVAL: u64 = 10;
+const MAX_PER_INTERVAL: u64 = 5;
+
+struct LimitAddr {
+	start: Instant,
+	count: u64
+}
+
+impl LimitAddr {
+	pub fn new() -> LimitAddr {
+		LimitAddr{ start: Instant::now(), count: 0 }
+	}
+	pub fn elapsed_secs(&self) -> u64 {
+		self.start.elapsed().as_secs()
+	}
+	pub fn allow_post(&mut self) -> bool {
+		if self.count >= MAX_PER_INTERVAL {
+			false
+		} else {
+			self.count += 1;
+			true
+		}
+	}
+}
+
 pub struct Limiter {
-	map: HashMap<String, Instant>
+	map: HashMap<String, LimitAddr>
 }
 
 impl Limiter {
@@ -47,7 +72,7 @@ impl Limiter {
 	fn get_expired(&self) -> Vec<String>	{
 		let mut expired = Vec::new();
 		for (key,val) in self.map.iter() {
-			if val.elapsed().as_secs() >= 10	{
+			if val.elapsed_secs() >= INTERVAL	{
 				expired.push(key.clone());
 			}
 		}
@@ -59,13 +84,15 @@ impl Limiter {
 		self.remove(x);
 	}
 
-	pub fn can_paste(&mut self, ip: &String) -> bool {
+	pub fn can_paste(&mut self, addr: &String) -> bool {
 		self.handle_expired();
-		match self.map.contains_key(ip)	{
-			true => false,
+		match self.map.contains_key(addr)	{
+			true => {
+				self.map.get_mut(addr).unwrap().allow_post()
+			},
 			false => {
-				self.map.insert(ip.clone(), Instant::now());
-				true
+				self.map.insert(addr.clone(), LimitAddr::new());
+				self.map.get_mut(addr).unwrap().allow_post()
 			}
 		}
 	}
@@ -81,7 +108,7 @@ impl <'a,'r>FromRequest<'a,'r> for LimitGuard  {
 
 		let mut limiter = state.write().unwrap();
 
-		match limiter.can_paste(&sender.ip)	{
+		match limiter.can_paste(&sender.addr)	{
 			true => Outcome::Success(LimitGuard()),
 			false => Outcome::Failure((Status::raw(429), ()))
 		}
