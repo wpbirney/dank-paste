@@ -36,7 +36,7 @@ use rocket::response::{NamedFile, Redirect};
 use rocket_contrib::Template;
 use rocket_contrib::Json;
 
-const VERSION: &'static str = "dank-paste v0.1.2";
+const VERSION: &'static str = "dank-paste v0.2.0";
 
 pub fn proto() -> String {
 	match args().nth(1) {
