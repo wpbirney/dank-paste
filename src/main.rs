@@ -126,18 +126,31 @@ fn retrieve(id: String) -> Option<File> {
 struct PrettyCtx {
 	content: String,
 	version: String,
-	id:	String
+	id:	String,
+	url: String,
+	pretty: String
+}
+
+impl PrettyCtx {
+	pub fn new(id: PasteId, content: String, host: HostInfo) -> PrettyCtx {
+		PrettyCtx{
+			content: content,
+			version: VERSION.to_string(),
+			id: id.id(),
+			url: id.url(&host.host),
+			pretty: id.source_url(&host.host)
+		}
+	}
 }
 
 #[get("/h/<id>")]
 fn retrieve_pretty(id: String, host: HostInfo) -> Result<Template, Option<Redirect>> {
 	if let Some(mut f) = get_paste(id.clone()) {
 		let mut buf = String::new();
+		let i = PasteId::from_id(&id).unwrap();
 		return match f.read_to_string(&mut buf) {
-			Ok(_) => Ok(Template::render("pretty", PrettyCtx{ content: buf, version: VERSION.to_string(), id: id })),
-			Err(_) => {
-				Err(Some(Redirect::to(&format!("{}://{}/{}", proto(), host.host, id))))
-			}
+			Ok(_) => Ok(Template::render("pretty", PrettyCtx::new(i, buf, host))),
+			Err(_) => Err(Some(Redirect::to(&i.url(&host.host))))
 		}
 	}
 	Err(None)
