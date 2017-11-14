@@ -36,9 +36,10 @@ impl PasteInfo  {
 impl <'a,'r>FromRequest<'a,'r> for PasteInfo  {
 	type Error = ();
 	fn from_request(request: &'a Request<'r>) -> request::Outcome<PasteInfo, ()>  {
-		let mut age: u64 = MAX_AGE;
+		let mut age: u64 = 86400;
 		if let Some(ex) = request.headers().get_one("expire")   {
 			age = ex.parse().unwrap();
+			if age > MAX_AGE { age = 86400 }
 		}
 		Outcome::Success(PasteInfo::new(age))
 	}
