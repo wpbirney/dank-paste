@@ -173,9 +173,9 @@ fn upload_form(paste: MultipartUpload, info: PasteInfo, host: HostInfo, _limit: 
 }
 
 #[post("/shorty", data = "<url>")]
-fn create_url(url: Json<UrlInfo>, host: HostInfo) -> String {
+fn create_url(url: String, info: PasteInfo, host: HostInfo) -> String {
 	let id = UrlId::generate();
-	let info = url.into_inner();
+	let info = UrlInfo{ expire: info.expire, target: url };
 	info.write_to_file(&id.filename());
 	id.url(&host.host)
 }
