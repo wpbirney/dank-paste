@@ -87,7 +87,7 @@ struct IndexCtx {
 
 #[get("/")]
 fn index() -> Template  {
-	Template::render("index", IndexCtx{ version: VERSION.to_string() })
+	Template::render("pastebin", IndexCtx{ version: VERSION.to_string() })
 }
 
 #[get("/static/<path..>")]
