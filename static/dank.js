@@ -65,6 +65,7 @@ function addShortUrlEntry(response, old)	{
 
 var uploadButton = document.getElementById('upload-btn');
 var pasteButton = document.getElementById('paste-btn');
+var submitUrl = document.getElementById('submit-url');
 var clearUrlButton = document.getElementById('url-clear-btn');
 var pasteUrlContainer = document.getElementById('paste-url');
 var expire = document.getElementById('expire');
@@ -133,7 +134,7 @@ pasteButton.addEventListener('click', function() {
 	}
 });
 
-document.getElementById("submit-url").addEventListener('click', function() {
+submitUrl.addEventListener('click', function() {
 	var urlentry = document.getElementById("url-entry");
 	if(urlentry.value != "") {
 		var xhr = new XMLHttpRequest();
@@ -144,6 +145,7 @@ document.getElementById("submit-url").addEventListener('click', function() {
 					//display url list, append url
 					pasteUrlContainer.style.display = 'flex';
 					addShortUrlEntry(this.responseText, urlentry.value);
+					urlentry.value = "";
 				} else if(this.status = 429) {
 					alert("quit being a jew and wait a few seconds");
 				} else {
