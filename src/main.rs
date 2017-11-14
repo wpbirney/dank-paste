@@ -173,7 +173,7 @@ fn upload_form(paste: MultipartUpload, info: PasteInfo, host: HostInfo, _limit: 
 }
 
 #[post("/shorty", data = "<url>")]
-fn create_url(url: String, info: PasteInfo, host: HostInfo) -> String {
+fn create_url(url: String, info: PasteInfo, host: HostInfo, _limit: LimitGuard) -> String {
 	let id = UrlId::generate();
 	let info = UrlInfo{ expire: info.expire, target: url };
 	info.write_to_file(&id.filename());
@@ -181,8 +181,8 @@ fn create_url(url: String, info: PasteInfo, host: HostInfo) -> String {
 }
 
 #[get("/s/<id>")]
-fn redirect_short(id: String) -> Redirect {
-	let i = UrlId::from_id(&id).unwrap();
+fn redirect_short(id: String) -> Option<Redirect> {
+	let i = UrlId::from_id(&id)?;
 	let info = UrlInfo::load(&i.filename());
-	Redirect::to(&info.target)
+	Some(Redirect::to(&info.target))
 }
