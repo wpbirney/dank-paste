@@ -28,6 +28,7 @@ use limiting::*;
 use std::path::{Path, PathBuf};
 use std::fs::{self, File};
 use std::io::prelude::*;
+use std::env::args;
 
 use rocket::data::Data;
 use rocket::response::{NamedFile, Redirect};
@@ -38,9 +39,15 @@ use rocket_contrib::Json;
 const VERSION: &'static str = "dank-paste v0.1.2";
 
 pub fn proto() -> String {
-	if cfg!(feature = "debug") {
-		return "http".to_string()
-	} else	{ "https".to_string() }
+	match args().nth(1) {
+		Some(s) => {
+			if s == "http" {
+				return "http".to_string()
+			}
+			"https".to_string()
+		},
+		None => "https".to_string()
+	}
 }
 
 fn init_dir(path: &str)	{
