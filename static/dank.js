@@ -52,6 +52,17 @@ function addUrlEntry(response) {
 	list.appendChild(item);
 }
 
+function addShortUrlEntry(response, old)	{
+	var list = document.getElementById('paste-url-list');
+	var item = document.createElement('li');
+
+	var link = createLinkButton(response, response);
+
+	item.appendChild(link);
+	item.appendChild(document.createElement('hr'));
+	list.appendChild(item);
+}
+
 var uploadButton = document.getElementById('upload-btn');
 var pasteButton = document.getElementById('paste-btn');
 var clearUrlButton = document.getElementById('url-clear-btn');
@@ -117,6 +128,31 @@ pasteButton.addEventListener('click', function() {
 		};
         xhr.setRequestHeader('expire', expire.value);
         xhr.send(p.value);
+	} else {
+		alert("Enter some text to paste fool");
+	}
+});
+
+document.getElementById("submit-url").addEventListener('click', function() {
+	var urlentry = document.getElementById("url-entry");
+	if(urlentry.value != "") {
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', '/shorty', true);
+		xhr.onreadystatechange = function() {
+			if(this.readyState == 4) {
+				if(this.status == 200) {
+					//display url list, append url
+					pasteUrlContainer.style.display = 'flex';
+					addShortUrlEntry(this.responseText, urlentry.value);
+				} else if(this.status = 429) {
+					alert("quit being a jew and wait a few seconds");
+				} else {
+					alert("Upload failed!");
+				}
+			}
+		};
+		xhr.setRequestHeader('expire', expire.value);
+		xhr.send(urlentry.value);
 	} else {
 		alert("Enter some text to paste fool");
 	}
