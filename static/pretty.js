@@ -27,11 +27,12 @@ function updateLang(reload)	{
 			break;
 		default:
 			removeAllPlugins();
+			link.href = orig;
 			break;
 	}
 
 	if(reload) {
-		document.location.reload();
+		document.location = link.href;
 	}
 }
 
