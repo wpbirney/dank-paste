@@ -78,21 +78,19 @@ const fileWrapperChange = "url('/static/img/bg_changefile.svg')";
 const fileWrapperSelectDark = "url('/static/img/bg_selectfile_dark.svg')";
 const fileWrapperChangeDark = "url('/static/img/bg_changefile_dark.svg')";
 
-
-//upload file
-uploadButton.addEventListener('click', function() {
-	var files = fileInput.files;
-	if(files.length > 0) {
-		var form = new FormData();
-		form.append('file', files[0], files[0].name);
-		var xhr = new XMLHttpRequest();
-		xhr.open('POST', '/upload', true);
-		xhr.onreadystatechange = function() {
+class dankPaste {
+	constructor(url, expire) {
+		this.xhr = new XMLHttpRequest();
+		this.xhr.open('POST', url, true);
+		var self = this;
+		this.xhr.onreadystatechange = function() {
 			if(this.readyState == 4) {
 				if(this.status == 200) {
 					//display url list, append url
 					pasteUrlContainer.style.display = 'flex';
-					addUrlEntry(this.responseText);
+					if(typeof self.onsuccess === 'function') {
+						self.onsuccess(this.responseText);
+					}
 				} else if(this.status == 429) {
 					alert("quit being a jew and wait a few seconds");
 				} else {
@@ -100,8 +98,25 @@ uploadButton.addEventListener('click', function() {
 				}
 			}
 		};
-		xhr.setRequestHeader('expire', expire.value);
-		xhr.send(form);
+		this.xhr.setRequestHeader('expire', expire);
+	}
+	send(data) {
+		this.xhr.send(data);
+	}
+}
+
+
+//upload file
+uploadButton.addEventListener('click', function() {
+	var files = fileInput.files;
+	if(files.length > 0) {
+		var form = new FormData();
+		form.append('file', files[0], files[0].name);
+		var dp = new dankPaste('/upload', expire.value);
+		dp.onsuccess = function(response) {
+			addUrlEntry(response);
+		};
+		dp.send(form);
 	} else {
 		alert('Please select a file to upload');
 	}
@@ -111,24 +126,12 @@ uploadButton.addEventListener('click', function() {
 pasteButton.addEventListener('click', function() {
 	var p = document.getElementById('paste-box');
 	if(p.value != "") {
-		var xhr = new XMLHttpRequest();
-		xhr.open('POST', '/', true);
-		xhr.onreadystatechange = function() {
-			if(this.readyState == 4) {
-				if(this.status == 200) {
-					//display url list, append url
-					pasteUrlContainer.style.display = 'flex';
-					addUrlEntry(this.responseText);
-                    p.value = "";
-				} else if(this.status == 429) {
-					alert("quit being a jew and wait a few seconds");
-				} else {
-					alert("Upload failed!");
-				}
-			}
+		var dp = new dankPaste('/', expire.value);
+		dp.onsuccess = function(response) {
+			addUrlEntry(response);
+			p.value = "";
 		};
-        xhr.setRequestHeader('expire', expire.value);
-        xhr.send(p.value);
+		dp.send(p.value);
 	} else {
 		alert("Enter some text to paste fool");
 	}
@@ -137,26 +140,15 @@ pasteButton.addEventListener('click', function() {
 submitUrl.addEventListener('click', function() {
 	var urlentry = document.getElementById("url-entry");
 	if(urlentry.value != "") {
-		var xhr = new XMLHttpRequest();
-		xhr.open('POST', '/shorty', true);
-		xhr.onreadystatechange = function() {
-			if(this.readyState == 4) {
-				if(this.status == 200) {
-					//display url list, append url
-					pasteUrlContainer.style.display = 'flex';
-					addShortUrlEntry(this.responseText, urlentry.value);
-					urlentry.value = "";
-				} else if(this.status == 429) {
-					alert("quit being a jew and wait a few seconds");
-				} else {
-					alert("Upload failed!");
-				}
-			}
+		var dp = new dankPaste('/shorty', expire.value);
+		dp.onsuccess = function(response) {
+			pasteUrlContainer.style.display = 'flex';
+			addShortUrlEntry(response, urlentry.value);
+			urlentry.value = "";
 		};
-		xhr.setRequestHeader('expire', expire.value);
-		xhr.send(urlentry.value);
+		dp.send(urlentry.value);
 	} else {
-		alert("Enter some text to paste fool");
+		alert("Enter a url jackass");
 	}
 });
 
