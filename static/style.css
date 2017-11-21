@@ -1,3 +1,8 @@
+/*
+	dank-paste stylesheet
+	author: Josh Cooper <-> coopercomputer.net
+*/
+
 @font-face {
 	font-family: "Hermit";
 	src: url("/static/fonts/Hermit-medium.otf");
@@ -97,8 +102,9 @@ body {
 .dp-container button:hover,
 .dp-container .file-wrapper:hover,
 .dp-container select:focus,
-.dp-container textarea:focus {
-	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 3px 10px 0 rgba(0,0,0,0.19);
+.dp-container textarea:focus,
+.dp-container #url-entry:focus {
+	box-shadow: 0 5px 5px rgba(100,100,100,0.25);
 }
 .dp-container #paste-url {
 	display: none;
@@ -151,57 +157,63 @@ body {
 	top: 0;
 	z-index: 1;
 }
+
+/*
+	dark theme
+*/
+
 body.theme-dark {
 	background-color: #111;
-
 }
-div.theme-dark {
+
+.theme-dark {
 	background-color: black;
 }
-div.theme-dark h1 {
+
+.theme-dark h1 {
 	background-color: grey;
 	color: black;
 }
-div.theme-dark h3,
-div.theme-dark p,
-div.theme-dark a,
-div.theme-dark input,
-div.theme-dark select,
-div.theme-dark textarea,
-div.theme-dark code,
-div.theme-dark label {
+.theme-dark h3,
+.theme-dark p,
+.theme-dark a,
+.theme-dark input,
+.theme-dark select,
+.theme-dark textarea,
+.theme-dark code,
+.theme-dark label {
 	color: green;
 }
-div.theme-dark code {
+.theme-dark code {
 	background-color: #07123f;
 }
-div.theme-dark select,
-div.theme-dark textarea,
-div.theme-dark #url-entry {
+.theme-dark select,
+.theme-dark textarea,
+.theme-dark #url-entry {
 	background-color: black;
 }
-div.theme-dark button,
-div.theme-dark select,
-div.theme-dark textarea,
-div.theme-dark #theme-btn,
-div.theme-dark #url-entry {
+.theme-dark button,
+.theme-dark select,
+.theme-dark textarea,
+.theme-dark #theme-btn,
+.theme-dark #url-entry {
 	border: 1px solid green;
 }
-div.theme-dark button,
-div.theme-dark #theme-btn {
+.theme-dark button,
+.theme-dark #theme-btn {
 	color: black;
 }
-div.theme-dark .file-wrapper {
+.theme-dark .file-wrapper {
 	border-color: green;
 	background-image: url('/static/img/bg_selectfile_dark.svg');
 	background-color: #0066a7;
 }
-div.theme-dark button:hover,
-div.theme-dark .file-wrapper:hover,
-div.theme-dark select:focus,
-div.theme-dark textarea:focus,
-div.theme-dark #url-entry:focus {
-	box-shadow: 0 4px 8px 0 rgba(0,255,0,0.2), 0 3px 10px 0 rgba(0,255,0,0.19);
+.theme-dark button:hover,
+.theme-dark .file-wrapper:hover,
+.theme-dark select:focus,
+.theme-dark textarea:focus,
+.theme-dark #url-entry:focus {
+	box-shadow: 0 5px 5px rgba(0,255,0,0.25);
 }
 @media (max-width: 420px) {
 	.dp-container {
