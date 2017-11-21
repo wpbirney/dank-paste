@@ -103,7 +103,8 @@ body {
 .dp-container .file-wrapper:hover,
 .dp-container select:focus,
 .dp-container textarea:focus,
-.dp-container #url-entry:focus {
+.dp-container #url-entry:focus,
+.dp-container #paste-url a:hover {
 	box-shadow: 0 5px 5px rgba(100,100,100,0.25);
 }
 .dp-container #paste-url {
@@ -115,16 +116,14 @@ body {
 	padding-left: 20px;
 }
 .dp-container #paste-url a {
-	color: grey;
 	text-decoration: none;
-	color: black;
+	color: white;
 	background-color: #4caf50;
 	border: 1px solid green;
 	border-radius: 0.25em;
 	padding: 0.10em;
-}
-.dp-container a:hover {
-	box-shadow: 0 4px 8px 0 rgba(0,255,0,0.2), 0 3px 10px 0 rgba(0,255,0,0.19);
+	margin-left: 1em;
+	min-width: 5em;
 }
 
 .dp-container #paste-url button {
@@ -156,6 +155,11 @@ body {
 	margin: 0;
 	top: 0;
 	z-index: 1;
+}
+
+.dp-container select {
+	background-color: white;
+	color: black;
 }
 
 /*
@@ -212,8 +216,16 @@ body.theme-dark {
 .theme-dark .file-wrapper:hover,
 .theme-dark select:focus,
 .theme-dark textarea:focus,
-.theme-dark #url-entry:focus {
+.theme-dark #url-entry:focus,
+.theme-dark #paste-url a:hover {
 	box-shadow: 0 5px 5px rgba(0,255,0,0.25);
+}
+.theme-dark #paste-url a {
+	color: black;
+}
+.theme-dark select {
+	background-color: black;
+	color: green;
 }
 @media (max-width: 420px) {
 	.dp-container {

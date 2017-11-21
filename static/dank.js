@@ -24,8 +24,6 @@ function getCookie(cname) {
 function createLinkButton(url, text)	{
 	var link = document.createElement('a');
 	link.innerHTML = text;
-	link.style.marginLeft = '1em';
-	link.style.minWidth = '5em';
 	link.href = url;
 	link.target = '_blank';
 	return link;
