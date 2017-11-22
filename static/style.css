@@ -202,17 +202,21 @@ body {
 
 .dp-container #url-container {
 	display: flex;
-	text-align: center;
+	justify-content: center;
+	align-items: center;
+	align-content: center;
 	width: 100%;
+	flex-wrap: wrap;
 }
 
 .dp-container #url-entry {
-	width: 75%;
+	flex-grow: 10;
 	max-height: 1.5em;
 }
 
 .dp-container #submit-url {
 	display: inline-block;
+	overflow: scroll;
 }
 
 /*
