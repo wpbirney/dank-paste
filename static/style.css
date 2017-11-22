@@ -14,7 +14,6 @@ body {
 	line-height: 1.5;
 	margin: 0;
 	background-color: white;
-	background-image: url('/static/img/pimp.jpg');
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	background-position: 50% 20%;
@@ -130,33 +129,6 @@ body {
 .dp-container #paste-url button {
     background-color: #f44336;
 }
-.dp-container .file-wrapper {
-	height: 2rem;
-	margin: 0.5rem;
-	background-color: #68b0de;
-	background-image: url('/static/img/bg_selectfile.svg');
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: 80px 16px;
-	overflow: hidden;
-	border-radius: 0.5rem;
-	border: 1px solid white;
-}
-.dp-container .file-wrapper input[type="file"] {
-	position: relative;
-	margin: 0;
-	height: 100%;
-	width: 100%;
-	opacity: 0;
-	z-index: 2;
-	cursor: pointer;
-}
-.dp-container .file-wrapper p {
-	position: relative;
-	margin: 0;
-	top: 0;
-	z-index: 1;
-}
 
 .dp-container select {
 	background-color: white;
@@ -222,10 +194,16 @@ body {
 
 .dp-container #file-upload-div {
 	display: flex;
+	justify-content: center;
 }
 
-.dp-container #file-upload-div .file-wrapper {
+.dp-container #file-upload-div #upload-file {
 	flex-grow: 10;
+	border: 1px solid green;
+	border-radius: 0.5em;
+	text-align: center;
+	padding: 0.5em;
+	margin: 0.5em;
 }
 
 /*
@@ -240,9 +218,13 @@ body.theme-dark {
 	background-color: black;
 }
 
+.theme-dark .dp-container {
+	border: 1px solid green;
+}
+
 .theme-dark h1 {
-	background-color: grey;
-	color: black;
+	background-color: rgb(10,10,10);
+	color: green;
 }
 .theme-dark h3,
 .theme-dark p,

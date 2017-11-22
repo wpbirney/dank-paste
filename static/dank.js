@@ -165,18 +165,6 @@ clearUrlButton.addEventListener('click', function() {
 	pasteUrlContainer.style.display = 'none';
 });
 
-//things specific to custom-styled file input
-function updateFileWrapper() {
-	if(document.getElementsByClassName('dp-container')[0].classList.contains('theme-dark')) {
-		document.getElementsByClassName('file-wrapper')[0].style.backgroundImage = (document.getElementById('upload-file').files.length > 0) ? fileWrapperChangeDark : fileWrapperSelectDark;
-	} else {
-		document.getElementsByClassName('file-wrapper')[0].style.backgroundImage = (document.getElementById('upload-file').files.length > 0) ? fileWrapperChange : fileWrapperSelect;
-	}
-}
-fileInput.addEventListener('change', updateFileWrapper);
-//update text if file is already selected on page load
-updateFileWrapper();
-
 //toggles between light (default style) and dark themes (class theme-dark)
 var currentTheme = 'light';
 
@@ -190,7 +178,6 @@ function toggleTheme() {
 			elem.classList.remove('theme-dark');
 		}
 	}
-	updateFileWrapper();
 	currentTheme = (currentTheme == 'light') ? 'dark' : 'light';
 	setCookie('theme', currentTheme, 365);
 }
