@@ -123,8 +123,9 @@ body {
 	border: 1px solid green;
 	border-radius: 0.25em;
 	padding: 0.10em;
-	margin-left: 1em;
+	margin: auto;
 	min-width: 5em;
+	text-align: center;
 }
 
 .dp-container #paste-url button {
@@ -161,6 +162,15 @@ body {
 .dp-container select {
 	background-color: white;
 	color: black;
+}
+
+.dp-container #paste-url #paste-res {
+	display: flex;
+	flex-direction: row;
+}
+
+#paste-res label {
+	margin: auto;
 }
 
 .dp-container #paste-url #shorturl {

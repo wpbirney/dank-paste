@@ -43,9 +43,13 @@ function addUrlEntry(response) {
 
 	var hr = document.createElement('hr');
 
-	item.appendChild(id);
-	item.appendChild(rlink);
-	item.appendChild(slink);
+	var d = document.createElement('div');
+	d.id = 'paste-res';
+
+	d.appendChild(id);
+	d.appendChild(rlink);
+	d.appendChild(slink);
+	item.appendChild(d);
 	item.appendChild(hr);
 	list.appendChild(item);
 }
