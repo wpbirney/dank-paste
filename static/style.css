@@ -216,7 +216,6 @@ body {
 
 .dp-container #submit-url {
 	display: inline-block;
-	overflow: scroll;
 }
 
 /*
