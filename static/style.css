@@ -207,13 +207,12 @@ body {
 }
 
 .dp-container #url-entry {
-	width: 100%;
+	width: 75%;
 	max-height: 1.5em;
 }
 
 .dp-container #submit-url {
 	display: inline-block;
-	min-width: 10em;
 }
 
 /*
