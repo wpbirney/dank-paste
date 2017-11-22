@@ -55,6 +55,7 @@ function addShortUrlEntry(response, old)	{
 	var item = document.createElement('li');
 
 	var link = createLinkButton(response, response);
+	link.id = 'shorturl';
 
 	item.appendChild(link);
 	item.appendChild(document.createElement('hr'));
@@ -140,7 +141,6 @@ submitUrl.addEventListener('click', function() {
 	if(urlentry.value != "") {
 		var dp = new dankPaste('/shorty', expire.value);
 		dp.onsuccess = function(response) {
-			pasteUrlContainer.style.display = 'flex';
 			addShortUrlEntry(response, urlentry.value);
 			urlentry.value = "";
 		};

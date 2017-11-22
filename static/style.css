@@ -113,7 +113,8 @@ body {
 }
 .dp-container #paste-url ul {
 	list-style: none;
-	padding-left: 20px;
+	padding-left: 2em;
+	padding-right: 2em;
 }
 .dp-container #paste-url a {
 	text-decoration: none;
@@ -160,6 +161,13 @@ body {
 .dp-container select {
 	background-color: white;
 	color: black;
+}
+
+.dp-container #paste-url #shorturl {
+	display: block;
+	margin: auto;
+	width: 75%;
+	text-align: center;
 }
 
 /*
