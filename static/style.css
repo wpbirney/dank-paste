@@ -200,6 +200,22 @@ body {
 	padding: 0.10em;
 }
 
+.dp-container #url-container {
+	display: flex;
+	text-align: center;
+	width: 100%;
+}
+
+.dp-container #url-entry {
+	width: 100%;
+	max-height: 1.5em;
+}
+
+.dp-container #submit-url {
+	display: inline-block;
+	min-width: 10em;
+}
+
 /*
 	dark theme
 */
