@@ -81,6 +81,13 @@ const fileWrapperChange = "url('/static/img/bg_changefile.svg')";
 const fileWrapperSelectDark = "url('/static/img/bg_selectfile_dark.svg')";
 const fileWrapperChangeDark = "url('/static/img/bg_changefile_dark.svg')";
 
+
+/*
+	dankPaste
+		the main class we use to paste to dank-paste
+		sets up the XMLHttpRequest and sets the proper callback
+		on success dankPaste calls this.onsuccess, expects the responseText
+*/
 class dankPaste {
 	constructor(url, expire) {
 		this.xhr = new XMLHttpRequest();
