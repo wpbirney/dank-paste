@@ -10,3 +10,4 @@ A Ton of shit is still needed for dank-paste
 	have a way for users to easily add new themes. Currently we are limited to the
 	light/dark themes. It should be easy enough to add support for multiple themes
 	based on individual css files
+* 404 handling
