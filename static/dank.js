@@ -1,3 +1,7 @@
+/*
+	the following setCookie and getCookie were
+	copied from w3
+*/
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
