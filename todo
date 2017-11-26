@@ -1,0 +1,12 @@
+A Ton of shit is still needed for dank-paste
+
+* curl instructions, pastebin and url shortener both work with curl
+* static/dank.js is a mess, needs cleaned up and commented
+* almost none of the source is commented, it is simple enough to follow
+	but comments would be nice
+* there was thought about a possible administration page that allows changing
+	theme, bg, etc
+* modular themes, right now both themes are in style.css and it would be nice to
+	have a way for users to easily add new themes. Currently we are limited to the
+	light/dark themes. It should be easy enough to add support for multiple themes
+	based on individual css files
