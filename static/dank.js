@@ -73,14 +73,6 @@ var clearUrlButton = document.getElementById('url-clear-btn');
 var pasteUrlContainer = document.getElementById('paste-url');
 var expire = document.getElementById('expire');
 var fileInput = document.getElementById('upload-file');
-var fileWrapper = document.getElementsByClassName('file-wrapper')[0];
-
-//file wrapper background urls
-const fileWrapperSelect = "url('/static/img/bg_selectfile.svg')";
-const fileWrapperChange = "url('/static/img/bg_changefile.svg')";
-const fileWrapperSelectDark = "url('/static/img/bg_selectfile_dark.svg')";
-const fileWrapperChangeDark = "url('/static/img/bg_changefile_dark.svg')";
-
 
 /*
 	dankPaste
