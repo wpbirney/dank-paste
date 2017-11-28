@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>what the fuck?</title>
+<style>
+@font-face {
+	font-family: "Hermit";
+	src: url("/static/fonts/Hermit-medium.otf");
+}
+body {
+	font-family: "Hermit";
+	background-color: rgb(0,10,0);
+	color: green;
+}
+h1 {
+	text-align: center;
+}
+ul {
+	border: 1px solid green;
+	background-color: black;
+}
+li {
+	padding: 0.5em;
+	background-color: black;
+}
+li:hover {
+	background-color: rgb(40,40,40);
+}
+#time {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+}
+#time label {
+	color: green;
+	margin-right: 0.5em;
+}
+#time #tv {
+	margin-right: 0.5em;
+}
+#cont {
+	border: 1px solid green;
+	display: flex;
+	flex-flow: row wrap;
+	padding: 0.5em;
+	background-color: black;
+}
+#cont:hover {
+	background-color: rgb(40,40,40);
+}
+</style>
+</head>
+<body>
+
+<div class='msg'>
+	<h1>what the fuck?</h1>
+	<h2>it appears you maybe suffering from one of the following issues...</h2>
+	<ul>
+		<li>are you high? (if the answer is no, then immediatly pack a bong and attempt connection again)</li>
+		<li>the paste you are trying to receive is expired? when the fuck did you tell it to expire?</li>
+		<li>repeat steps 1 and 2 until success is achieved</li>
+	</ul>
+	<div id='time'>
+		<div id='cont'>
+			<label>auto redirecting in: </label>
+			<div id='tv'>10</div>
+			<div>sec</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+var tv = document.getElementById('tv');
+var v = 10;
+
+
+function countDown() {
+	v -= 1;
+
+	if(v === 0) {
+		window.location.href = '/';
+	}
+
+	tv.innerHTML = v;
+	setTimeout(countDown, 1000);
+}
+
+setTimeout(countDown, 1000);
+
+</script>
+
+</body>
+</html>
