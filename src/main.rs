@@ -207,7 +207,14 @@ fn redirect_short(id: String) -> Option<Redirect> {
 	Some(Redirect::to(&info.target))
 }
 
+#[derive(Serialize)]
+struct NotFoundCtx {
+	request: String
+}
+
 #[error(404)]
-fn not_found(req: &Request) -> Option<NamedFile> {
-	NamedFile::open("static/404.html").ok()
+fn not_found(req: &Request) -> Template {
+	Template::render("404", NotFoundCtx{
+		request: req.uri().to_string()
+	})
 }

@@ -63,9 +63,17 @@ li:hover {
 .ascii-art:hover {
 	color: red;
 }
+.request {
+	color: green;
+	text-align: center;
+}
 </style>
 </head>
 <body>
+
+<div class='request'>
+lookin' for some {{request}}? look somewhere else! shit ain't here!
+</div>
 
 <div class='ascii-box'>
 	<div class='ascii-art'>
@@ -107,7 +115,7 @@ li:hover {
 	<div id='time'>
 		<div id='cont'>
 			<label>auto redirecting in: </label>
-			<div id='tv'>10</div>
+			<div id='tv'>30</div>
 			<div>sec</div>
 		</div>
 	</div>
@@ -116,13 +124,16 @@ li:hover {
 <script>
 
 var tv = document.getElementById('tv');
-var v = 10;
-
+var v = 15;
+tv.innerHTML = v;
+document.getElementById('time').addEventListener('click', function() {
+	v = 0;
+});
 
 function countDown() {
 	v -= 1;
 
-	if(v === 0) {
+	if(v <= 0) {
 		window.location.href = '/';
 	}
 
