@@ -32,6 +32,7 @@ use std::env::args;
 
 use rocket::data::Data;
 use rocket::response::{NamedFile, Redirect};
+use rocket::Request;
 
 use rocket_contrib::Template;
 use rocket_contrib::Json;
@@ -77,6 +78,7 @@ fn main() {
 	rocket::ignite()
 		.attach(Template::fairing())
 		.manage(Limiter::create_state())
+		.catch(errors![not_found])
 		.mount("/", r).launch();
 }
 
@@ -203,4 +205,9 @@ fn redirect_short(id: String) -> Option<Redirect> {
 	let i = UrlId::from_id(&id)?;
 	let info = UrlInfo::load(&i.filename());
 	Some(Redirect::to(&info.target))
+}
+
+#[error(404)]
+fn not_found(req: &Request) -> Option<NamedFile> {
+	NamedFile::open("static/404.html").ok()
 }
