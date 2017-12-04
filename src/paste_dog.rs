@@ -30,20 +30,20 @@ fn get_age(path: &Path) -> Option<u64> {
 }
 
 macro_rules! delete_if_expired {
-	($fp:expr, $id:expr, $info:tt) => {
-		let age = get_age($fp).unwrap();
-		let info = $info::load($fp.to_str().unwrap());
+    ($fp:expr, $id:expr, $info:tt) => {
+        let age = get_age($fp).unwrap();
+        let info = $info::load($fp.to_str().unwrap());
 
-		if info.expire == 0 {
-			if age > MAX_AGE {
-				$id.delete_all();
-			}
-		} else {
-			if age > info.expire {
-				$id.delete_all();
-			}
-		}
-	};
+        if info.expire == 0 {
+            if age > MAX_AGE {
+                $id.delete_all();
+            }
+        } else {
+            if age > info.expire {
+                $id.delete_all();
+            }
+        }
+    };
 }
 
 fn walk_paste() {
