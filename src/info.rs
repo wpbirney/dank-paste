@@ -22,47 +22,49 @@ macro_rules! load_write {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct PasteInfo    {
-    pub expire: u64
+pub struct PasteInfo {
+    pub expire: u64,
 }
 
-impl PasteInfo  {
-	pub fn new(secs: u64) -> PasteInfo   {
-		PasteInfo{expire: secs}
-	}
-	load_write!(Self);
+impl PasteInfo {
+    pub fn new(secs: u64) -> PasteInfo {
+        PasteInfo { expire: secs }
+    }
+    load_write!(Self);
 }
 
-impl <'a,'r>FromRequest<'a,'r> for PasteInfo  {
-	type Error = ();
-	fn from_request(request: &'a Request<'r>) -> request::Outcome<PasteInfo, ()>  {
-		let mut age: u64 = 86400;
-		if let Some(ex) = request.headers().get_one("expire")   {
-			age = ex.parse().unwrap();
-			if age > MAX_AGE { age = 86400 }
-		}
-		Outcome::Success(PasteInfo::new(age))
-	}
+impl<'a, 'r> FromRequest<'a, 'r> for PasteInfo {
+    type Error = ();
+    fn from_request(request: &'a Request<'r>) -> request::Outcome<PasteInfo, ()> {
+        let mut age: u64 = 86400;
+        if let Some(ex) = request.headers().get_one("expire") {
+            age = ex.parse().unwrap();
+            if age > MAX_AGE {
+                age = 86400
+            }
+        }
+        Outcome::Success(PasteInfo::new(age))
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UrlInfo {
-	pub expire: u64,
-	pub target: String
+    pub expire: u64,
+    pub target: String,
 }
 
 impl UrlInfo {
-	load_write!(Self);
+    load_write!(Self);
 }
 
 pub struct HostInfo {
-	pub host: String
+    pub host: String,
 }
 
-impl <'a,'r>FromRequest<'a,'r> for HostInfo  {
-	type Error = ();
-	fn from_request(request: &'a Request<'r>) -> request::Outcome<HostInfo, ()>  {
-		let host = request.headers().get_one("Host").unwrap();
-		Outcome::Success(HostInfo{host: host.to_string()})
-	}
+impl<'a, 'r> FromRequest<'a, 'r> for HostInfo {
+    type Error = ();
+    fn from_request(request: &'a Request<'r>) -> request::Outcome<HostInfo, ()> {
+        let host = request.headers().get_one("Host").unwrap();
+        Outcome::Success(HostInfo { host: host.to_string() })
+    }
 }
