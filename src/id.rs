@@ -48,27 +48,27 @@ where
 }
 
 macro_rules! dankid_derive {
-	($root:expr, $t:tt) => {
-		fn generate() -> $t {
-			$t { id: generate_unused($root) }
-		}
+    ($root:expr, $t:tt) => {
+        fn generate() -> $t {
+            $t { id: generate_unused($root) }
+        }
 
-		fn from_id(id: &str) -> Option<$t>	{
-			match check_for_id($root, id) {
-				true => Some($t { id: id.to_string() }),
-				false => None
-			}
-		}
-		fn id(&self) -> String { self.id.clone() }
-		fn filename(&self) -> String { format!("{}/{}", $root, self.id) }
-		fn json(&self) -> String { format!("{}/{}.json", $root, &self.id) }
-		fn del(&self) -> String { format!("{}/{}.del", $root, &self.id) }
-		fn delete_all(&self)	{
-		    fs::remove_file(self.filename()).unwrap_or(());
-		    fs::remove_file(self.json()).unwrap_or(());
-		    fs::remove_file(self.del()).unwrap_or(());
-		}
-	};
+        fn from_id(id: &str) -> Option<$t>    {
+            match check_for_id($root, id) {
+                true => Some($t { id: id.to_string() }),
+                false => None
+            }
+        }
+        fn id(&self) -> String { self.id.clone() }
+        fn filename(&self) -> String { format!("{}/{}", $root, self.id) }
+        fn json(&self) -> String { format!("{}/{}.json", $root, &self.id) }
+        fn del(&self) -> String { format!("{}/{}.del", $root, &self.id) }
+        fn delete_all(&self)    {
+            fs::remove_file(self.filename()).unwrap_or(());
+            fs::remove_file(self.json()).unwrap_or(());
+            fs::remove_file(self.del()).unwrap_or(());
+        }
+    };
 }
 
 
