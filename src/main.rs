@@ -37,7 +37,7 @@ use rocket::Request;
 use rocket_contrib::Template;
 use rocket_contrib::Json;
 
-const VERSION: &'static str = "dank-paste v0.2.2";
+const VERSION: &'static str = "dank-paste v0.2.3";
 const LOG_PRE: &'static str = "[dank]: ";
 
 pub fn proto() -> String {
