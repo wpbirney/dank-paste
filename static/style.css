@@ -276,6 +276,10 @@ body.theme-dark {
 .theme-dark #footer {
     background-color: rgb(10,10,10);
 }
+.theme-dark #paste-count {
+    color: green;
+    text-align: center;
+}
 @media (max-width: 420px) {
     .dp-container {
         width: 100%;

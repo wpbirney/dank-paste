@@ -29,10 +29,13 @@ use std::path::{Path, PathBuf};
 use std::fs::{self, File};
 use std::io::prelude::*;
 use std::env::args;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 use rocket::data::Data;
 use rocket::response::{NamedFile, Redirect};
 use rocket::Request;
+
+use rocket::State;
 
 use rocket_contrib::Template;
 use rocket_contrib::Json;
@@ -67,8 +70,28 @@ fn initialize() {
     init_dir("shorts");
 }
 
+fn count_paste() -> usize {
+    let mut paste = 0;
+    for path in fs::read_dir("upload").unwrap() {
+        match path.unwrap().path().extension() {
+            Some(_) => continue,
+            None => paste += 1
+        }
+    }
+    let url = fs::read_dir("shorts").unwrap().count();
+    paste + url
+}
+
+struct PasteCounter {
+    pub count: AtomicUsize
+}
+
 fn main() {
     initialize();
+
+    let p = PasteCounter {
+        count: AtomicUsize::new(count_paste())
+    };
 
     let _handle = paste_dog::launch();
 
@@ -81,11 +104,13 @@ fn main() {
         upload_form,
         create_url,
         redirect_short,
+        get_count,
     ];
 
     rocket::ignite()
         .attach(Template::fairing())
         .manage(Limiter::create_state())
+        .manage(p)
         .catch(errors![not_found])
         .mount("/", r)
         .launch();
@@ -94,11 +119,15 @@ fn main() {
 #[derive(Serialize)]
 struct IndexCtx {
     version: String,
+    paste_count: usize
 }
 
 #[get("/")]
-fn index() -> Template {
-    Template::render("pastebin", IndexCtx { version: VERSION.to_string() })
+fn index(paste_count: State<PasteCounter>) -> Template {
+    Template::render("pastebin", IndexCtx {
+        version: VERSION.to_string(),
+        paste_count: paste_count.count.load(Ordering::Relaxed)
+    })
 }
 
 #[get("/static/<path..>")]
@@ -180,11 +209,13 @@ fn upload(
     paste: Data,
     info: PasteInfo,
     host: HostInfo,
+    paste_count: State<PasteCounter>,
     _limit: LimitGuard,
 ) -> Option<Json<UploadResponse>> {
     let id = PasteId::generate();
     paste.stream_to_file(Path::new(&id.filename())).unwrap();
     info.write_to_file(&format!("{}.{}", id.filename(), "json"));
+    paste_count.count.fetch_add(1, Ordering::Relaxed);
     Some(Json(UploadResponse {
         id: id.id(),
         expire: info.expire,
@@ -198,11 +229,13 @@ fn upload_form(
     paste: MultipartUpload,
     info: PasteInfo,
     host: HostInfo,
+    paste_count: State<PasteCounter>,
     _limit: LimitGuard,
 ) -> Option<Json<UploadResponse>> {
     let id = PasteId::generate();
     paste.write_to_file(&id.filename());
     info.write_to_file(&format!("{}.{}", id.filename(), "json"));
+    paste_count.count.fetch_add(1, Ordering::Relaxed);
     Some(Json(UploadResponse {
         id: id.id(),
         expire: info.expire,
@@ -212,13 +245,14 @@ fn upload_form(
 }
 
 #[post("/shorty", data = "<url>")]
-fn create_url(url: String, info: PasteInfo, host: HostInfo, _limit: LimitGuard) -> String {
+fn create_url(url: String, info: PasteInfo, host: HostInfo, paste_count: State<PasteCounter>, _limit: LimitGuard) -> String {
     let id = UrlId::generate();
     let info = UrlInfo {
         expire: info.expire,
         target: url,
     };
     info.write_to_file(&id.filename());
+    paste_count.count.fetch_add(1, Ordering::Relaxed);
     id.url(&host.host)
 }
 
@@ -227,6 +261,13 @@ fn redirect_short(id: String) -> Option<Redirect> {
     let i = UrlId::from_id(&id)?;
     let info = UrlInfo::load(&i.filename());
     Some(Redirect::to(&info.target))
+}
+
+//get_count provides a simple way for ajax request to get the paste count
+#[get("/get/count")]
+fn get_count(paste_count: State<PasteCounter>) -> String {
+    let v = paste_count.count.load(Ordering::Relaxed);
+    v.to_string()
 }
 
 #[derive(Serialize)]
