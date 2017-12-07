@@ -89,7 +89,7 @@ struct PasteCounter {
 fn main() {
     initialize();
 
-    let p = PasteCounter { count: AtomicUsize::new(count_paste()) };
+    let counter = PasteCounter { count: AtomicUsize::new(count_paste()) };
 
     let _handle = paste_dog::launch();
 
@@ -109,7 +109,7 @@ fn main() {
     rocket::ignite()
         .attach(Template::fairing())
         .manage(Limiter::create_state())
-        .manage(p)
+        .manage(counter)
         .catch(errors![not_found])
         .mount("/", r)
         .launch();
