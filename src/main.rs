@@ -75,7 +75,7 @@ fn count_paste() -> usize {
     for path in fs::read_dir("upload").unwrap() {
         match path.unwrap().path().extension() {
             Some(_) => continue,
-            None => paste += 1
+            None => paste += 1,
         }
     }
     let url = fs::read_dir("shorts").unwrap().count();
@@ -83,19 +83,18 @@ fn count_paste() -> usize {
 }
 
 struct PasteCounter {
-    pub count: AtomicUsize
+    pub count: AtomicUsize,
 }
 
 fn main() {
     initialize();
 
-    let p = PasteCounter {
-        count: AtomicUsize::new(count_paste())
-    };
+    let p = PasteCounter { count: AtomicUsize::new(count_paste()) };
 
     let _handle = paste_dog::launch();
 
-    let r = routes![
+    let r =
+        routes![
         index,
         static_file,
         retrieve,
@@ -119,15 +118,18 @@ fn main() {
 #[derive(Serialize)]
 struct IndexCtx {
     version: String,
-    paste_count: usize
+    paste_count: usize,
 }
 
 #[get("/")]
 fn index(paste_count: State<PasteCounter>) -> Template {
-    Template::render("pastebin", IndexCtx {
-        version: VERSION.to_string(),
-        paste_count: paste_count.count.load(Ordering::Relaxed)
-    })
+    Template::render(
+        "pastebin",
+        IndexCtx {
+            version: VERSION.to_string(),
+            paste_count: paste_count.count.load(Ordering::Relaxed),
+        },
+    )
 }
 
 #[get("/static/<path..>")]
@@ -245,7 +247,13 @@ fn upload_form(
 }
 
 #[post("/shorty", data = "<url>")]
-fn create_url(url: String, info: PasteInfo, host: HostInfo, paste_count: State<PasteCounter>, _limit: LimitGuard) -> String {
+fn create_url(
+    url: String,
+    info: PasteInfo,
+    host: HostInfo,
+    paste_count: State<PasteCounter>,
+    _limit: LimitGuard,
+) -> String {
     let id = UrlId::generate();
     let info = UrlInfo {
         expire: info.expire,
