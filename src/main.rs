@@ -280,8 +280,7 @@ fn redirect_short(id: String) -> Option<Redirect> {
 //get_count provides a simple way for ajax request to get the paste count
 #[get("/get/count")]
 fn get_count(paste_count: State<PasteCounter>) -> String {
-    let v = paste_count.count.load(Ordering::Relaxed);
-    v.to_string()
+    paste_count.count.load(Ordering::Relaxed).to_string()
 }
 
 /*
