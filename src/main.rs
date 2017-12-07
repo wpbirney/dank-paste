@@ -246,6 +246,10 @@ fn upload_form(
     }))
 }
 
+/*
+    the create_url route handles new short url creation
+    PasteInfo request guard is used here soley to get the expire header
+*/
 #[post("/shorty", data = "<url>")]
 fn create_url(
     url: String,
@@ -264,6 +268,7 @@ fn create_url(
     id.url(&host.host)
 }
 
+//simple enough to read... just redirects to the requested id's expanded url
 #[get("/s/<id>")]
 fn redirect_short(id: String) -> Option<Redirect> {
     let i = UrlId::from_id(&id)?;
@@ -277,6 +282,10 @@ fn get_count(paste_count: State<PasteCounter>) -> String {
     let v = paste_count.count.load(Ordering::Relaxed);
     v.to_string()
 }
+
+/*
+    Error Handlers
+*/
 
 #[derive(Serialize)]
 struct NotFoundCtx {
