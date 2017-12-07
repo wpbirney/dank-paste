@@ -84,11 +84,15 @@ struct PasteCounter {
 }
 
 fn main() {
+
+    //create ./upload and ./shorts if needed
     initialize();
 
-    let counter = PasteCounter { count: AtomicUsize::new(count_paste()) };
-
+    //launch our paste watchdog thread
     let _handle = paste_dog::launch();
+
+    //initialize a PasteCounter based on the count_paste() result
+    let counter = PasteCounter { count: AtomicUsize::new(count_paste()) };
 
     let r =
         routes![
