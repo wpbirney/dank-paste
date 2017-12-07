@@ -217,7 +217,7 @@ fn upload(
 ) -> Option<Json<UploadResponse>> {
     let id = PasteId::generate();
     paste.stream_to_file(Path::new(&id.filename())).unwrap();
-    info.write_to_file(&format!("{}.{}", id.filename(), "json"));
+    info.write_to_file(&id.json());
     paste_count.count.fetch_add(1, Ordering::Relaxed);
     Some(Json(UploadResponse {
         id: id.id(),
@@ -237,7 +237,7 @@ fn upload_form(
 ) -> Option<Json<UploadResponse>> {
     let id = PasteId::generate();
     paste.write_to_file(&id.filename());
-    info.write_to_file(&format!("{}.{}", id.filename(), "json"));
+    info.write_to_file(&id.json());
     paste_count.count.fetch_add(1, Ordering::Relaxed);
     Some(Json(UploadResponse {
         id: id.id(),
@@ -260,11 +260,10 @@ fn create_url(
     _limit: LimitGuard,
 ) -> String {
     let id = UrlId::generate();
-    let info = UrlInfo {
+    UrlInfo {
         expire: info.expire,
         target: url,
-    };
-    info.write_to_file(&id.filename());
+    }.write_to_file(&id.filename());
     paste_count.count.fetch_add(1, Ordering::Relaxed);
     id.url(&host.host)
 }
