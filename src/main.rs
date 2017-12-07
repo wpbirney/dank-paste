@@ -55,21 +55,19 @@ pub fn proto() -> String {
     }
 }
 
-pub fn dank_log(msg: &str) {
-    println!("{} {}", LOG_PRE, msg);
-}
-
 fn init_dir(path: &str) {
     if !Path::new(path).exists() {
         fs::create_dir(path).unwrap();
     }
 }
 
+//creates if needed, the required directories used by dank-paste
 fn initialize() {
     init_dir("upload");
     init_dir("shorts");
 }
 
+//returns the total number of paste+short urls stored by dank-paste
 fn count_paste() -> usize {
     let mut paste = 0;
     for path in fs::read_dir("upload").unwrap() {
