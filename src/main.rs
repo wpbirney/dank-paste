@@ -199,12 +199,28 @@ fn retrieve_pretty(id: String, host: HostInfo) -> Result<Template, Option<Redire
     Err(None)
 }
 
+
+/*
+    UploadResponse is the response we send back after a succesful pastebin
+    derives Serialize to be returned as json
+*/
 #[derive(Serialize)]
 struct UploadResponse {
     id: String,
     expire: u64,
     raw_url: String,
     source_url: String,
+}
+
+impl UploadResponse {
+    fn new(id: PasteId, info: PasteInfo, host: HostInfo) -> UploadResponse {
+        UploadResponse {
+            id: id.id(),
+            expire: info.expire,
+            raw_url: id.url(&host.host),
+            source_url: id.source_url(&host.host),
+        }
+    }
 }
 
 #[post("/", data = "<paste>")]
@@ -219,12 +235,7 @@ fn upload(
     paste.stream_to_file(Path::new(&id.filename())).unwrap();
     info.write_to_file(&id.json());
     paste_count.count.fetch_add(1, Ordering::Relaxed);
-    Some(Json(UploadResponse {
-        id: id.id(),
-        expire: info.expire,
-        raw_url: id.url(&host.host),
-        source_url: id.source_url(&host.host),
-    }))
+    Some(Json(UploadResponse::new(id, info, host)))
 }
 
 #[post("/upload", data = "<paste>")]
@@ -239,12 +250,7 @@ fn upload_form(
     paste.write_to_file(&id.filename());
     info.write_to_file(&id.json());
     paste_count.count.fetch_add(1, Ordering::Relaxed);
-    Some(Json(UploadResponse {
-        id: id.id(),
-        expire: info.expire,
-        raw_url: id.url(&host.host),
-        source_url: id.source_url(&host.host),
-    }))
+    Some(Json(UploadResponse::new(id, info, host)))
 }
 
 /*
