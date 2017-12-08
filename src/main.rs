@@ -266,7 +266,7 @@ fn create_url(
     _limit: LimitGuard,
 ) -> String {
     let id = UrlId::generate();
-    UrlInfo::new(info.expire, url,).write_to_file(&id.filename());
+    UrlInfo::new(info.expire, url).write_to_file(&id.filename());
     paste_count.count.fetch_add(1, Ordering::Relaxed);
     id.url(&host.host)
 }

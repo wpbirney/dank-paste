@@ -54,12 +54,12 @@ pub struct UrlInfo {
 }
 
 impl UrlInfo {
-	pub fn new(expire: u64, target: String) -> UrlInfo {
-		UrlInfo {
-			expire: expire,
-			target: target,
-		}
-	}
+    pub fn new(expire: u64, target: String) -> UrlInfo {
+        UrlInfo {
+            expire: expire,
+            target: target,
+        }
+    }
     load_write!(Self);
 }
 
