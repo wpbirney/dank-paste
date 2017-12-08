@@ -8,17 +8,17 @@ use serde_json;
 use paste_dog::MAX_AGE;
 
 macro_rules! load_write {
-	($t:tt) => {
-		pub fn load(path: &str) -> $t {
-			let f = File::open(path).unwrap();
-			serde_json::from_reader(f).unwrap()
-		}
+    ($t:tt) => {
+        pub fn load(path: &str) -> $t {
+            let f = File::open(path).unwrap();
+            serde_json::from_reader(f).unwrap()
+        }
 
-		pub fn write_to_file(&self, path: &str)   {
-			let f = File::create(path).unwrap();
-			serde_json::to_writer(f, &self).unwrap();
-		}
-	};
+        pub fn write_to_file(&self, path: &str)   {
+            let f = File::create(path).unwrap();
+            serde_json::to_writer(f, &self).unwrap();
+        }
+    };
 }
 
 #[derive(Serialize, Deserialize)]
