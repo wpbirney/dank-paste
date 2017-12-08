@@ -21,9 +21,10 @@ mod mpu;
 mod limiting;
 
 use id::{DankId, PasteId, UrlId};
-use info::{PasteInfo, UrlInfo, HostInfo};
+use info::{PasteInfo, UrlInfo, RequestInfo};
 use mpu::MultipartUpload;
 use limiting::*;
+use paste_dog::DEFAULT_AGE;
 
 use std::path::{Path, PathBuf};
 use std::fs::{self, File};
@@ -175,7 +176,7 @@ struct PrettyCtx {
 }
 
 impl PrettyCtx {
-    pub fn new(id: PasteId, content: String, host: HostInfo) -> PrettyCtx {
+    pub fn new(id: PasteId, content: String, host: RequestInfo) -> PrettyCtx {
         PrettyCtx {
             content: content,
             version: VERSION.to_string(),
@@ -187,7 +188,7 @@ impl PrettyCtx {
 }
 
 #[get("/h/<id>")]
-fn retrieve_pretty(id: String, host: HostInfo) -> Result<Template, Option<Redirect>> {
+fn retrieve_pretty(id: String, host: RequestInfo) -> Result<Template, Option<Redirect>> {
     if let Some(mut f) = get_paste(id.clone()) {
         let mut buf = String::new();
         let i = PasteId::from_id(&id).unwrap();
@@ -213,12 +214,12 @@ struct UploadResponse {
 }
 
 impl UploadResponse {
-    fn new(id: PasteId, info: PasteInfo, host: HostInfo) -> UploadResponse {
+    fn new(id: PasteId, info: PasteInfo, host: &str) -> UploadResponse {
         UploadResponse {
             id: id.id(),
             expire: info.expire,
-            raw_url: id.url(&host.host),
-            source_url: id.source_url(&host.host),
+            raw_url: id.url(host),
+            source_url: id.source_url(host),
         }
     }
 }
@@ -226,31 +227,31 @@ impl UploadResponse {
 #[post("/", data = "<paste>")]
 fn upload(
     paste: Data,
-    info: PasteInfo,
-    host: HostInfo,
+    info: RequestInfo,
     paste_count: State<PasteCounter>,
     _limit: LimitGuard,
 ) -> Option<Json<UploadResponse>> {
     let id = PasteId::generate();
+    let pinfo = PasteInfo::new(info.expire?);
     paste.stream_to_file(Path::new(&id.filename())).unwrap();
-    info.write_to_file(&id.json());
+    pinfo.write_to_file(&id.json());
     paste_count.count.fetch_add(1, Ordering::Relaxed);
-    Some(Json(UploadResponse::new(id, info, host)))
+    Some(Json(UploadResponse::new(id, pinfo, &info.host)))
 }
 
 #[post("/upload", data = "<paste>")]
 fn upload_form(
     paste: MultipartUpload,
-    info: PasteInfo,
-    host: HostInfo,
+    info: RequestInfo,
     paste_count: State<PasteCounter>,
     _limit: LimitGuard,
 ) -> Option<Json<UploadResponse>> {
     let id = PasteId::generate();
+    let pinfo = PasteInfo::new(info.expire?);
     paste.write_to_file(&id.filename());
-    info.write_to_file(&id.json());
+    pinfo.write_to_file(&id.json());
     paste_count.count.fetch_add(1, Ordering::Relaxed);
-    Some(Json(UploadResponse::new(id, info, host)))
+    Some(Json(UploadResponse::new(id, pinfo, &info.host)))
 }
 
 /*
@@ -260,15 +261,14 @@ fn upload_form(
 #[post("/shorty", data = "<url>")]
 fn create_url(
     url: String,
-    info: PasteInfo,
-    host: HostInfo,
+    info: RequestInfo,
     paste_count: State<PasteCounter>,
     _limit: LimitGuard,
 ) -> String {
     let id = UrlId::generate();
-    UrlInfo::new(info.expire, url).write_to_file(&id.filename());
+    UrlInfo::new(info.expire.unwrap_or(DEFAULT_AGE), url).write_to_file(&id.filename());
     paste_count.count.fetch_add(1, Ordering::Relaxed);
-    id.url(&host.host)
+    id.url(&info.host)
 }
 
 //simple enough to read... just redirects to the requested id's expanded url

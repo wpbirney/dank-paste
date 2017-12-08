@@ -14,6 +14,8 @@ use id::{DankId, PasteId, UrlId};
 //maximum allowed age in seconds
 pub const MAX_AGE: u64 = 259200;
 
+pub const DEFAULT_AGE: u64 = 86400;
+
 //seconds to pause between cycles
 const INTERVAL: u64 = 10;
 
