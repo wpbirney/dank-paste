@@ -1,6 +1,6 @@
 [package]
 name = "dank-paste"
-version = "0.2.3"
+version = "0.2.4"
 authors = ["Wilson Birney <wpb@360scada.com>"]
 
 [dependencies]
