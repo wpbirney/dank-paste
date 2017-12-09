@@ -48,10 +48,18 @@ document.getElementById("lang-pick").addEventListener('change', function() {
     updateLang(true);
 });
 
-document.getElementById('link').addEventListener('click', function() {
+var link = document.getElementById('link');
+var _link = link.innerHTML;
+
+link.addEventListener('click', function() {
     let x = document.getElementById('sel');
     x.hidden = false;
+    x.value = document.location.href;
     x.select();
     document.execCommand('copy');
     x.hidden = true;
+    link.innerHTML = 'Copied';
+    setTimeout(function() {
+        link.innerHTML = _link;
+    }, 3000);
 });
