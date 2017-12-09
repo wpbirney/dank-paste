@@ -6,6 +6,7 @@ var link = document.getElementById('link');
 var codebox = document.getElementById("code");
 
 var orig = document.location.href;
+orig = orig.split('?')[0];
 var ID = orig.split('/').reverse()[0];
 var plugins = ['lang-rust', 'lang-css'];
 
