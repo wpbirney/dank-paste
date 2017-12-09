@@ -5,7 +5,7 @@ var pick = document.getElementById("lang-pick");
 var link = document.getElementById('link');
 var codebox = document.getElementById("code");
 
-var orig = link.href;
+var orig = document.location.href;
 var ID = orig.split('/').reverse()[0];
 var plugins = ['lang-rust', 'lang-css'];
 
@@ -46,4 +46,12 @@ updateLang(false);
 
 document.getElementById("lang-pick").addEventListener('change', function() {
     updateLang(true);
+});
+
+document.getElementById('link').addEventListener('click', function() {
+    let x = document.getElementById('sel');
+    x.hidden = false;
+    x.select();
+    document.execCommand('copy');
+    x.hidden = true;
 });

@@ -53,7 +53,8 @@
             <option value="rust">rust</option>
             <option value="css">css</option>
         </select>
-        <a id='link' class='dlink' target='_blank' href="{{pretty}}">Copy Link</a>
+        <button id='link' class='dlink'>Copy Link</button>
+        <textarea id='sel' hidden="true">{{pretty}}</textarea>
         <a id='raw' class='dlink' target="_blank" href="{{url}}">View Raw</a>
     </div>
     <pre id='code' class='prettyprint linenums'>{{content}}</pre>
