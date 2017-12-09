@@ -58,7 +58,7 @@ link.addEventListener('click', function() {
     x.select();
     document.execCommand('copy');
     x.hidden = true;
-    link.innerHTML = 'Copied';
+    link.innerHTML = 'Copied!';
     setTimeout(function() {
         link.innerHTML = _link;
     }, 3000);
