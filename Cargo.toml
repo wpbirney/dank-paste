@@ -11,6 +11,7 @@ multipart = "*"
 serde = "*"
 serde_json = "*"
 serde_derive = "*"
+dank_codegen = { path = "./codegen" }
 
 [dependencies.rocket_contrib]
 version = "*"

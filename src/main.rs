@@ -14,6 +14,9 @@ extern crate serde_derive;
 //#[macro_use]
 extern crate serde_json;
 
+#[macro_use]
+extern crate dank_codegen;
+
 mod paste_dog;
 mod id;
 mod info;
@@ -21,7 +24,7 @@ mod mpu;
 mod limiting;
 
 use id::{DankId, PasteId, UrlId};
-use info::{PasteInfo, UrlInfo, RequestInfo};
+use info::{PasteInfo, UrlInfo, RequestInfo, LoadWrite};
 use mpu::MultipartUpload;
 use limiting::*;
 use paste_dog::DEFAULT_AGE;

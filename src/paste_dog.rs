@@ -8,7 +8,7 @@ use std::path::Path;
 use std::time::Duration;
 use std::thread::{self, JoinHandle};
 
-use info::{PasteInfo, UrlInfo};
+use info::{PasteInfo, UrlInfo, LoadWrite};
 use id::{DankId, PasteId, UrlId};
 
 //maximum allowed age in seconds

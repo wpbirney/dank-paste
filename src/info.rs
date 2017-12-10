@@ -7,21 +7,12 @@ use serde_json;
 
 use paste_dog::{MAX_AGE, DEFAULT_AGE};
 
-macro_rules! load_write {
-    ($t:tt) => {
-        pub fn load(path: &str) -> $t {
-            let f = File::open(path).unwrap();
-            serde_json::from_reader(f).unwrap()
-        }
-
-        pub fn write_to_file(&self, path: &str)   {
-            let f = File::create(path).unwrap();
-            serde_json::to_writer(f, &self).unwrap();
-        }
-    };
+pub trait LoadWrite {
+    fn load(path: &str) -> Self;
+    fn write_to_file(&self, path: &str);
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, LoadWrite)]
 pub struct PasteInfo {
     pub expire: u64,
 }
@@ -30,10 +21,9 @@ impl PasteInfo {
     pub fn new(secs: u64) -> PasteInfo {
         PasteInfo { expire: secs }
     }
-    load_write!(Self);
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, LoadWrite)]
 pub struct UrlInfo {
     pub expire: u64,
     pub target: String,
@@ -46,7 +36,6 @@ impl UrlInfo {
             target: target,
         }
     }
-    load_write!(Self);
 }
 
 pub struct RequestInfo {
