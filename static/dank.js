@@ -194,3 +194,19 @@ switch(getCookie('theme'))    {
         toggleTheme();
         break;
 }
+
+var count = document.getElementById('paste-count');
+
+function updateCount() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/get/count', true);
+    xhr.onreadystatechange = function() {
+        if(this.readyState == 4 && this.status == 200) {
+            count.innerHTML = 'paste count: ' + this.responseText;
+            setTimeout(updateCount, 5000);
+        }
+    }
+    xhr.send();
+}
+
+setTimeout(updateCount, 5000);
