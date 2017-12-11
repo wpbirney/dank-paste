@@ -34,11 +34,11 @@ use std::fs::{self, File};
 use std::io::prelude::*;
 use std::env::args;
 use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Arc;
 
 use rocket::data::Data;
 use rocket::response::{NamedFile, Redirect};
 use rocket::Request;
-
 use rocket::State;
 
 use rocket_contrib::Template;
@@ -83,7 +83,7 @@ fn count_paste() -> usize {
     paste + url
 }
 
-struct PasteCounter {
+pub struct PasteCounter {
     pub count: AtomicUsize,
 }
 
@@ -92,11 +92,12 @@ fn main() {
     //create ./upload and ./shorts if needed
     initialize();
 
-    //launch our paste watchdog thread
-    let _handle = paste_dog::launch();
-
     //initialize a PasteCounter based on the count_paste() result
     let counter = PasteCounter { count: AtomicUsize::new(count_paste()) };
+    let a_counter = Arc::new(counter);
+
+    //launch our paste watchdog thread
+    let _handle = paste_dog::launch(a_counter.clone());
 
     let r =
         routes![
@@ -114,7 +115,7 @@ fn main() {
     rocket::ignite()
         .attach(Template::fairing())
         .manage(Limiter::create_state())
-        .manage(counter)
+        .manage(a_counter)
         .catch(errors![not_found])
         .mount("/", r)
         .launch();
@@ -127,7 +128,7 @@ struct IndexCtx {
 }
 
 #[get("/")]
-fn index(paste_count: State<PasteCounter>) -> Template {
+fn index(paste_count: State<Arc<PasteCounter>>) -> Template {
     Template::render(
         "pastebin",
         IndexCtx {
@@ -231,7 +232,7 @@ impl UploadResponse {
 fn upload(
     paste: Data,
     info: RequestInfo,
-    paste_count: State<PasteCounter>,
+    paste_count: State<Arc<PasteCounter>>,
     _limit: LimitGuard,
 ) -> Option<Json<UploadResponse>> {
     let id = PasteId::generate();
@@ -246,7 +247,7 @@ fn upload(
 fn upload_form(
     paste: MultipartUpload,
     info: RequestInfo,
-    paste_count: State<PasteCounter>,
+    paste_count: State<Arc<PasteCounter>>,
     _limit: LimitGuard,
 ) -> Option<Json<UploadResponse>> {
     let id = PasteId::generate();
@@ -265,7 +266,7 @@ fn upload_form(
 fn create_url(
     url: String,
     info: RequestInfo,
-    paste_count: State<PasteCounter>,
+    paste_count: State<Arc<PasteCounter>>,
     _limit: LimitGuard,
 ) -> String {
     let id = UrlId::generate();
@@ -284,7 +285,7 @@ fn redirect_short(id: String) -> Option<Redirect> {
 
 //get_count provides a simple way for ajax request to get the paste count
 #[get("/get/count")]
-fn get_count(paste_count: State<PasteCounter>) -> String {
+fn get_count(paste_count: State<Arc<PasteCounter>>) -> String {
     paste_count.count.load(Ordering::Relaxed).to_string()
 }
 

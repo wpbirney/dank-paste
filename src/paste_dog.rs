@@ -7,9 +7,13 @@ use std::fs;
 use std::path::Path;
 use std::time::Duration;
 use std::thread::{self, JoinHandle};
+use std::sync::Arc;
+use std::sync::atomic::Ordering;
 
 use info::{PasteInfo, UrlInfo, DankInfo};
 use id::{DankId, PasteId, UrlId};
+
+use PasteCounter;
 
 //maximum allowed age in seconds
 pub const MAX_AGE: u64 = 259200;
@@ -21,8 +25,10 @@ pub const DEFAULT_AGE: u64 = 86400;
 const INTERVAL: u64 = 10;
 
 //spawn the paste_dog thread
-pub fn launch() -> JoinHandle<()> {
-    let handle = thread::spawn(move || { paste_dog(); });
+pub fn launch(counter: Arc<PasteCounter>) -> JoinHandle<()> {
+    let handle = thread::spawn(move || {
+        PasteDog { counter: counter }.run();
+    });
     handle
 }
 
@@ -32,47 +38,60 @@ fn get_age(path: &Path) -> Option<u64> {
     Some(modified.elapsed().ok()?.as_secs())
 }
 
-//delete id if info expire time is passed
-fn delete_if_expired<T: DankInfo, I: DankId>(info: T, id: I) {
-    let age = get_age(Path::new(&id.filename())).unwrap();
-    if info.expire() == 0 {
-        if age > MAX_AGE {
-            id.delete_all();
-        }
-    } else {
-        if age > info.expire() {
-            id.delete_all();
-        }
-    }
+struct PasteDog {
+    counter: Arc<PasteCounter>
 }
 
-fn walk_paste() {
-    for path in fs::read_dir("upload").unwrap() {
-        let fp = path.unwrap().path();
+impl PasteDog {
 
-        if let Some(ext) = fp.extension() {
-            let paste = PasteId::from_id(fp.file_stem().unwrap().to_str().unwrap()).unwrap();
-            if ext == "del" {
-                paste.delete_all();
-            } else if ext == "json" {
-                delete_if_expired(PasteInfo::load(fp.to_str().unwrap()), paste);
+    fn delete_id<T: DankId>(&self, id: T) {
+        self.counter.count.fetch_sub(1, Ordering::Relaxed);
+        id.delete_all();
+        println!("deleted! id: {}", id.id());
+    }
+
+    //delete id if info expire time is passed
+    fn delete_if_expired<T: DankInfo, I: DankId>(&self, info: T, id: I) {
+        let age = get_age(Path::new(&id.filename())).unwrap();
+        if info.expire() == 0 {
+            if age > MAX_AGE {
+                self.delete_id(id);
+            }
+        } else {
+            if age > info.expire() {
+                self.delete_id(id);
             }
         }
     }
-}
 
-fn walk_url() {
-    for path in fs::read_dir("shorts").unwrap() {
-        let fp = path.unwrap().path();
-        let url = UrlId::from_id(fp.file_name().unwrap().to_str().unwrap()).unwrap();
-        delete_if_expired(UrlInfo::load(fp.to_str().unwrap()), url);
+    fn walk_paste(&self) {
+        for path in fs::read_dir("upload").unwrap() {
+            let fp = path.unwrap().path();
+
+            if let Some(ext) = fp.extension() {
+                let paste = PasteId::from_id(fp.file_stem().unwrap().to_str().unwrap()).unwrap();
+                if ext == "del" {
+                    self.delete_id(paste);
+                } else if ext == "json" {
+                    self.delete_if_expired(PasteInfo::load(fp.to_str().unwrap()), paste);
+                }
+            }
+        }
     }
-}
 
-fn paste_dog() {
-    loop {
-        thread::sleep(Duration::from_secs(INTERVAL));
-        walk_paste();
-        walk_url();
+    fn walk_url(&self) {
+        for path in fs::read_dir("shorts").unwrap() {
+            let fp = path.unwrap().path();
+            let url = UrlId::from_id(fp.file_name().unwrap().to_str().unwrap()).unwrap();
+            self.delete_if_expired(UrlInfo::load(fp.to_str().unwrap()), url);
+        }
+    }
+
+    fn run(&self) {
+        loop {
+            thread::sleep(Duration::from_secs(INTERVAL));
+            self.walk_paste();
+            self.walk_url();
+        }
     }
 }
