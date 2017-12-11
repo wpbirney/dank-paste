@@ -7,12 +7,13 @@ use serde_json;
 
 use paste_dog::{MAX_AGE, DEFAULT_AGE};
 
-pub trait LoadWrite {
+pub trait DankInfo {
     fn load(path: &str) -> Self;
     fn write_to_file(&self, path: &str);
+    fn expire(&self) -> u64;
 }
 
-#[derive(Serialize, Deserialize, LoadWrite)]
+#[derive(Serialize, Deserialize, DankInfo)]
 pub struct PasteInfo {
     pub expire: u64,
 }
@@ -23,7 +24,7 @@ impl PasteInfo {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, LoadWrite)]
+#[derive(Serialize, Deserialize, Debug, DankInfo)]
 pub struct UrlInfo {
     pub expire: u64,
     pub target: String,

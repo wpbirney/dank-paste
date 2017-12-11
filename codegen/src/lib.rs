@@ -8,10 +8,10 @@ extern crate quote;
 use syn::MetaItem;
 use proc_macro::TokenStream;
 
-fn impl_load_write(ast: &syn::DeriveInput) -> quote::Tokens {
+fn impl_dank_info(ast: &syn::DeriveInput) -> quote::Tokens {
     let name = &ast.ident;
     quote! {
-        impl LoadWrite for #name {
+        impl DankInfo for #name {
             fn load(path: &str) -> #name {
                 let f = File::open(path).unwrap();
                 serde_json::from_reader(f).unwrap()
@@ -21,12 +21,16 @@ fn impl_load_write(ast: &syn::DeriveInput) -> quote::Tokens {
                 let f = File::create(path).unwrap();
                 serde_json::to_writer(f, &self).unwrap();
             }
+
+            fn expire(&self) -> u64 {
+                self.expire
+            }
         }
     }
 }
 
-#[proc_macro_derive(LoadWrite)]
-pub fn load_write(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(DankInfo)]
+pub fn dank_info(input: TokenStream) -> TokenStream {
     // Construct a string representation of the type definition
     let s = input.to_string();
 
@@ -34,7 +38,7 @@ pub fn load_write(input: TokenStream) -> TokenStream {
     let ast = syn::parse_derive_input(&s).unwrap();
 
     // Build the impl
-    let gen = impl_load_write(&ast);
+    let gen = impl_dank_info(&ast);
 
     // Return the generated impl
     gen.parse().unwrap()

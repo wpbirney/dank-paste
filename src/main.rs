@@ -24,7 +24,7 @@ mod mpu;
 mod limiting;
 
 use id::{DankId, PasteId, UrlId};
-use info::{PasteInfo, UrlInfo, RequestInfo, LoadWrite};
+use info::{PasteInfo, UrlInfo, RequestInfo, DankInfo};
 use mpu::MultipartUpload;
 use limiting::*;
 use paste_dog::DEFAULT_AGE;

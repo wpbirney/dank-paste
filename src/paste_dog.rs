@@ -8,12 +8,13 @@ use std::path::Path;
 use std::time::Duration;
 use std::thread::{self, JoinHandle};
 
-use info::{PasteInfo, UrlInfo, LoadWrite};
+use info::{PasteInfo, UrlInfo, DankInfo};
 use id::{DankId, PasteId, UrlId};
 
 //maximum allowed age in seconds
 pub const MAX_AGE: u64 = 259200;
 
+//this should probably be moved? DEFAULT_AGE is not refrenced in paste_dog.rs
 pub const DEFAULT_AGE: u64 = 86400;
 
 //seconds to pause between cycles
@@ -31,21 +32,18 @@ fn get_age(path: &Path) -> Option<u64> {
     Some(modified.elapsed().ok()?.as_secs())
 }
 
-macro_rules! delete_if_expired {
-    ($fp:expr, $id:expr, $info:tt) => {
-        let age = get_age($fp).unwrap();
-        let info = $info::load($fp.to_str().unwrap());
-
-        if info.expire == 0 {
-            if age > MAX_AGE {
-                $id.delete_all();
-            }
-        } else {
-            if age > info.expire {
-                $id.delete_all();
-            }
+//delete id if info expire time is passed
+fn delete_if_expired<T: DankInfo, I: DankId>(info: T, id: I) {
+    let age = get_age(Path::new(&id.filename())).unwrap();
+    if info.expire() == 0 {
+        if age > MAX_AGE {
+            id.delete_all();
         }
-    };
+    } else {
+        if age > info.expire() {
+            id.delete_all();
+        }
+    }
 }
 
 fn walk_paste() {
@@ -57,7 +55,7 @@ fn walk_paste() {
             if ext == "del" {
                 paste.delete_all();
             } else if ext == "json" {
-                delete_if_expired!(&fp, paste, PasteInfo);
+                delete_if_expired(PasteInfo::load(fp.to_str().unwrap()), paste);
             }
         }
     }
@@ -67,7 +65,7 @@ fn walk_url() {
     for path in fs::read_dir("shorts").unwrap() {
         let fp = path.unwrap().path();
         let url = UrlId::from_id(fp.file_name().unwrap().to_str().unwrap()).unwrap();
-        delete_if_expired!(&fp, url, UrlInfo);
+        delete_if_expired(UrlInfo::load(fp.to_str().unwrap()), url);
     }
 }
 
