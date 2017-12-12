@@ -26,10 +26,7 @@ const INTERVAL: u64 = 10;
 
 //spawn the paste_dog thread
 pub fn launch(counter: Arc<PasteCounter>) -> JoinHandle<()> {
-    let handle = thread::spawn(move || {
-        PasteDog { counter: counter }.run();
-    });
-    handle
+    thread::spawn(move || { PasteDog { counter: counter }.run(); })
 }
 
 //get the age of the file at path in seconds
@@ -39,11 +36,10 @@ fn get_age(path: &Path) -> Option<u64> {
 }
 
 struct PasteDog {
-    counter: Arc<PasteCounter>
+    counter: Arc<PasteCounter>,
 }
 
 impl PasteDog {
-
     fn delete_id<T: DankId>(&self, id: T) {
         self.counter.count.fetch_sub(1, Ordering::Relaxed);
         id.delete_all();
