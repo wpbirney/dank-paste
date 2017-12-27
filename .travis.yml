@@ -4,3 +4,4 @@ dist: trusty # so we get a VM with higher specs
 cache: cargo
 rust:
     - nightly
+script: scripts/test.sh
