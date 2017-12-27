@@ -1,0 +1,11 @@
+[package]
+name = "dank_codegen"
+version = "0.1.0"
+authors = ["Wilson Birney <wpb@360scada.com>"]
+
+[lib]
+proc_macro = true
+
+[dependencies]
+syn = "*"
+quote = "*"
