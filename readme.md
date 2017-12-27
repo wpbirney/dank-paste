@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/wpbirney/dank-paste.svg?branch=master)](https://travis-ci.org/wpbirney/dank-paste)
+
 ## dank-paste
 
 The World's Dankest Paste Bin!
