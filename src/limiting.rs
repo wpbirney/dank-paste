@@ -59,7 +59,9 @@ pub struct Limiter {
 
 impl Limiter {
     pub fn new() -> Limiter {
-        Limiter { map: HashMap::new() }
+        Limiter {
+            map: HashMap::new(),
+        }
     }
 
     pub fn create_state() -> RwLock<Limiter> {

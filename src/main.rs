@@ -3,10 +3,11 @@
 #![feature(custom_derive)]
 #![feature(decl_macro)]
 
-extern crate rocket;
-extern crate rocket_contrib;
 extern crate multipart;
 extern crate rand;
+#[macro_use]
+extern crate rocket;
+extern crate rocket_contrib;
 
 #[macro_use]
 extern crate serde_derive;
@@ -88,19 +89,19 @@ pub struct PasteCounter {
 }
 
 fn main() {
-
     //create ./upload and ./shorts if needed
     initialize();
 
     //initialize a PasteCounter based on the count_paste() result
-    let counter = PasteCounter { count: AtomicUsize::new(count_paste()) };
+    let counter = PasteCounter {
+        count: AtomicUsize::new(count_paste()),
+    };
     let a_counter = Arc::new(counter);
 
     //launch our paste watchdog thread
     let _handle = paste_dog::launch(a_counter.clone());
 
-    let r =
-        routes![
+    let r = routes![
         index,
         static_file,
         retrieve,
@@ -116,7 +117,7 @@ fn main() {
         .attach(Template::fairing())
         .manage(Limiter::create_state())
         .manage(a_counter)
-        .catch(errors![not_found])
+        .catch(catchers![not_found])
         .mount("/", r)
         .launch();
 }
@@ -198,12 +199,11 @@ fn retrieve_pretty(id: String, host: RequestInfo) -> Result<Template, Option<Red
         let i = PasteId::from_id(&id).unwrap();
         return match f.read_to_string(&mut buf) {
             Ok(_) => Ok(Template::render("pretty", PrettyCtx::new(i, buf, host))),
-            Err(_) => Err(Some(Redirect::to(&i.url(&host.host)))),
+            Err(_) => Err(Some(Redirect::to(i.url(&host.host)))),
         };
     }
     Err(None)
 }
-
 
 /*
     UploadResponse is the response we send back after a succesful pastebin
@@ -280,7 +280,7 @@ fn create_url(
 fn redirect_short(id: String) -> Option<Redirect> {
     let i = UrlId::from_id(&id)?;
     let info = UrlInfo::load(&i.filename());
-    Some(Redirect::to(&info.target))
+    Some(Redirect::to(info.target))
 }
 
 //get_count provides a simple way for ajax request to get the paste count
@@ -298,7 +298,12 @@ struct NotFoundCtx {
     request: String,
 }
 
-#[error(404)]
+#[catch(404)]
 fn not_found(req: &Request) -> Template {
-    Template::render("404", NotFoundCtx { request: req.uri().to_string() })
+    Template::render(
+        "404",
+        NotFoundCtx {
+            request: req.uri().to_string(),
+        },
+    )
 }

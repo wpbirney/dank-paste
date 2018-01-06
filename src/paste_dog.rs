@@ -26,7 +26,9 @@ const INTERVAL: u64 = 10;
 
 //spawn the paste_dog thread
 pub fn launch(counter: Arc<PasteCounter>) -> JoinHandle<()> {
-    thread::spawn(move || { PasteDog { counter: counter }.run(); })
+    thread::spawn(move || {
+        PasteDog { counter: counter }.run();
+    })
 }
 
 //get the age of the file at path in seconds

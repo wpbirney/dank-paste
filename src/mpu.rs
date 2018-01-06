@@ -36,7 +36,6 @@ impl FromData for MultipartUpload {
     type Error = ();
 
     fn from_data(request: &Request, data: Data) -> data::Outcome<Self, Self::Error> {
-
         let mut mp = match get_multipart(&request, data) {
             Some(m) => m,
             None => return Outcome::Failure((Status::raw(421), ())),
@@ -55,6 +54,8 @@ impl FromData for MultipartUpload {
             other => panic!("No known key {}", other),
         }).expect("Unable to iterate");
 
-        Outcome::Success(MultipartUpload { file: file.expect("file not set") })
+        Outcome::Success(MultipartUpload {
+            file: file.expect("file not set"),
+        })
     }
 }
