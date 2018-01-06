@@ -4,8 +4,8 @@ version = "0.2.4"
 authors = ["Wilson Birney <wpb@360scada.com>"]
 
 [dependencies]
-rocket = "*"
-rocket_codegen = "*"
+rocket = { git = "https://github.com/SergioBenitez/Rocket" }
+rocket_codegen = { git = "https://github.com/SergioBenitez/Rocket" }
 rand = "*"
 multipart = "*"
 serde = "*"
@@ -14,6 +14,9 @@ serde_derive = "*"
 dank_codegen = { path = "./codegen" }
 
 [dependencies.rocket_contrib]
-version = "*"
+git = "https://github.com/SergioBenitez/Rocket"
 default-features = false
 features = ["handlebars_templates", "json"]
+
+[patch.crates-io]
+ring = { git = "https://github.com/SergioBenitez/ring", branch = "v0.12" }
