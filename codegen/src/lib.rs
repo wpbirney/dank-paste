@@ -1,15 +1,13 @@
-#![recursion_limit="128"]
+#![recursion_limit = "128"]
 
 extern crate proc_macro;
-extern crate syn;
 #[macro_use]
 extern crate quote;
+extern crate syn;
 
 use proc_macro::TokenStream;
-use syn::DeriveInput;
-use syn::Meta;
 
-use syn::Lit;
+use syn::{DeriveInput, Meta, Lit};
 
 #[proc_macro_derive(DankInfo)]
 pub fn dank_info(input: TokenStream) -> TokenStream {
@@ -43,12 +41,12 @@ fn impl_dank_id(ast: syn::DeriveInput) -> quote::Tokens {
 
     let meta = match ast.attrs[0].interpret_meta().unwrap() {
         Meta::NameValue(r) => r,
-        _ => panic!("")
+        _ => panic!(""),
     };
 
     let root = match meta.lit {
         Lit::Str(ref s) => s,
-        _ => panic!("")
+        _ => panic!(""),
     };
 
     let root = root.value();
@@ -82,7 +80,6 @@ fn impl_dank_id(ast: syn::DeriveInput) -> quote::Tokens {
 
 #[proc_macro_derive(DankId, attributes(Path))]
 pub fn dank_id(input: TokenStream) -> TokenStream {
-
     let ast: DeriveInput = syn::parse(input).unwrap();
 
     // Build the impl
