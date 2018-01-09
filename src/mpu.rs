@@ -1,5 +1,7 @@
 use std::io::prelude::*;
 use std::fs::File;
+use std::path::Path;
+use std::io;
 
 use std::io::{Read, Cursor};
 use rocket::data::{self, FromData};
@@ -14,9 +16,9 @@ pub struct MultipartUpload {
 }
 
 impl MultipartUpload {
-    pub fn write_to_file(&self, path: &String) {
-        let mut f = File::create(&path).expect("failed to open file");
-        f.write_all(&self.file).expect("failed to write file");
+    pub fn stream_to_file(&self, path: &Path) -> io::Result<()> {
+        let mut f = File::create(path)?;
+        f.write_all(&self.file)
     }
 }
 

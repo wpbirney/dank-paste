@@ -251,7 +251,7 @@ fn upload_form(
 ) -> Option<Json<UploadResponse>> {
     let id = PasteId::generate();
     let pinfo = PasteInfo::new(info.expire);
-    paste.write_to_file(&id.filename());
+    paste.stream_to_file(Path::new(&id.filename())).unwrap();
     pinfo.write_to_file(&id.json());
     paste_count.count.fetch_add(1, Ordering::Relaxed);
     Some(Json(UploadResponse::new(id, pinfo, &info.host)))
