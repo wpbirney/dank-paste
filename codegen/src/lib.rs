@@ -51,8 +51,6 @@ fn impl_dank_id(ast: syn::DeriveInput) -> quote::Tokens {
 
     let root = root.value();
 
-    println!("{}: {}", meta.ident, root);
-
     quote! {
         impl DankId for #name {
             fn generate() -> #name {
