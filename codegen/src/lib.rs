@@ -5,12 +5,19 @@ extern crate syn;
 #[macro_use]
 extern crate quote;
 
-use syn::MetaItem;
 use proc_macro::TokenStream;
+use syn::DeriveInput;
+use syn::Meta;
 
-fn impl_dank_info(ast: &syn::DeriveInput) -> quote::Tokens {
-    let name = &ast.ident;
-    quote! {
+use syn::Lit;
+
+#[proc_macro_derive(DankInfo)]
+pub fn dank_info(input: TokenStream) -> TokenStream {
+    // Parse the string representation
+    let ast: DeriveInput = syn::parse(input).unwrap();
+    let name = ast.ident;
+
+    let expanded = quote! {
         impl DankInfo for #name {
             fn load(path: &str) -> #name {
                 let f = File::open(path).unwrap();
@@ -26,36 +33,27 @@ fn impl_dank_info(ast: &syn::DeriveInput) -> quote::Tokens {
                 self.expire
             }
         }
-    }
-}
-
-#[proc_macro_derive(DankInfo)]
-pub fn dank_info(input: TokenStream) -> TokenStream {
-    // Construct a string representation of the type definition
-    let s = input.to_string();
-
-    // Parse the string representation
-    let ast = syn::parse_derive_input(&s).unwrap();
-
-    // Build the impl
-    let gen = impl_dank_info(&ast);
-
-    // Return the generated impl
-    gen.parse().unwrap()
-}
-
-fn impl_dank_id(ast: &syn::DeriveInput) -> quote::Tokens {
-    let name = &ast.ident;
-
-    if ast.attrs[0].name() != "Path" {
-        panic!("Path attribute needed");
-    }
-
-    let root = match ast.attrs[0].value {
-        MetaItem::NameValue(_,ref r) => r,
-        MetaItem::List(_,_) => panic!(""),
-        MetaItem::Word(_) => panic!("")
     };
+
+    expanded.into()
+}
+
+fn impl_dank_id(ast: syn::DeriveInput) -> quote::Tokens {
+    let name = ast.ident;
+
+    let meta = match ast.attrs[0].interpret_meta().unwrap() {
+        Meta::NameValue(r) => r,
+        _ => panic!("")
+    };
+
+    let root = match meta.lit {
+        Lit::Str(ref s) => s,
+        _ => panic!("")
+    };
+
+    let root = root.value();
+
+    println!("{}: {}", meta.ident, root);
 
     quote! {
         impl DankId for #name {
@@ -84,15 +82,11 @@ fn impl_dank_id(ast: &syn::DeriveInput) -> quote::Tokens {
 
 #[proc_macro_derive(DankId, attributes(Path))]
 pub fn dank_id(input: TokenStream) -> TokenStream {
-    // Construct a string representation of the type definition
-    let s = input.to_string();
 
-    // Parse the string representation
-    let ast = syn::parse_derive_input(&s).unwrap();
+    let ast: DeriveInput = syn::parse(input).unwrap();
 
     // Build the impl
-    let gen = impl_dank_id(&ast);
+    let expanded = impl_dank_id(ast);
 
-    // Return the generated impl
-    gen.parse().unwrap()
+    expanded.into()
 }
