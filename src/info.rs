@@ -40,7 +40,7 @@ impl UrlInfo {
 }
 
 pub struct RequestInfo {
-    pub expire: Option<u64>,
+    pub expire: u64,
     pub host: String,
 }
 
@@ -48,14 +48,14 @@ impl<'a, 'r> FromRequest<'a, 'r> for RequestInfo {
     type Error = ();
     fn from_request(request: &'a Request<'r>) -> request::Outcome<RequestInfo, ()> {
         let expire = match request.headers().get_one("expire") {
-            Some(v) => {
-                let mut a: u64 = v.parse().unwrap();
-                if a > MAX_AGE {
-                    a = DEFAULT_AGE;
+            Some(req_expire) => {
+                let mut exp: u64 = req_expire.parse().unwrap();
+                if exp > MAX_AGE {
+                    exp = DEFAULT_AGE;
                 }
-                Some(a)
+                exp
             }
-            None => None,
+            None => DEFAULT_AGE,
         };
 
         let host = request.headers().get_one("Host").unwrap();

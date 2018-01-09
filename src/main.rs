@@ -28,7 +28,6 @@ use id::{DankId, PasteId, UrlId};
 use info::{PasteInfo, UrlInfo, RequestInfo, DankInfo};
 use mpu::MultipartUpload;
 use limiting::*;
-use paste_dog::DEFAULT_AGE;
 
 use std::path::{Path, PathBuf};
 use std::fs::{self, File};
@@ -236,7 +235,7 @@ fn upload(
     _limit: LimitGuard,
 ) -> Option<Json<UploadResponse>> {
     let id = PasteId::generate();
-    let pinfo = PasteInfo::new(info.expire?);
+    let pinfo = PasteInfo::new(info.expire);
     paste.stream_to_file(Path::new(&id.filename())).unwrap();
     pinfo.write_to_file(&id.json());
     paste_count.count.fetch_add(1, Ordering::Relaxed);
@@ -251,7 +250,7 @@ fn upload_form(
     _limit: LimitGuard,
 ) -> Option<Json<UploadResponse>> {
     let id = PasteId::generate();
-    let pinfo = PasteInfo::new(info.expire?);
+    let pinfo = PasteInfo::new(info.expire);
     paste.write_to_file(&id.filename());
     pinfo.write_to_file(&id.json());
     paste_count.count.fetch_add(1, Ordering::Relaxed);
@@ -270,7 +269,7 @@ fn create_url(
     _limit: LimitGuard,
 ) -> String {
     let id = UrlId::generate();
-    UrlInfo::new(info.expire.unwrap_or(DEFAULT_AGE), url).write_to_file(&id.filename());
+    UrlInfo::new(info.expire, url).write_to_file(&id.filename());
     paste_count.count.fetch_add(1, Ordering::Relaxed);
     id.url(&info.host)
 }
