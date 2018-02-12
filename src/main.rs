@@ -44,7 +44,7 @@ use rocket::State;
 use rocket_contrib::Template;
 use rocket_contrib::Json;
 
-const VERSION: &'static str = "dank-paste v0.2.4";
+const VERSION: &'static str = "dank-paste v0.2.5";
 
 pub fn proto() -> String {
     match args().nth(1) {
