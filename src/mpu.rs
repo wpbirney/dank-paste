@@ -46,11 +46,10 @@ impl FromData for MultipartUpload {
         // Custom implementation parts
         let mut file = None;
 
-        mp.foreach_entry(|mut entry| match entry.name.as_str() {
+        mp.foreach_entry(|mut entry| match entry.headers.name.as_str() {
             "file" => {
                 let mut d = Vec::new();
-                let f = entry.data.as_file().expect("not file");
-                f.read_to_end(&mut d).expect("cant read");
+                entry.data.read_to_end(&mut d).expect("cant read");
                 file = Some(d);
             }
             other => panic!("No known key {}", other),
