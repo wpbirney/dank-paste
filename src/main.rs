@@ -116,7 +116,7 @@ fn main() {
         .attach(Template::fairing())
         .manage(Limiter::create_state())
         .manage(a_counter)
-        .catch(catchers![not_found])
+        .catch(errors![not_found])
         .mount("/", r)
         .launch();
 }
@@ -198,7 +198,7 @@ fn retrieve_pretty(id: String, host: RequestInfo) -> Result<Template, Option<Red
         let i = PasteId::from_id(&id).unwrap();
         return match f.read_to_string(&mut buf) {
             Ok(_) => Ok(Template::render("pretty", PrettyCtx::new(i, buf, host))),
-            Err(_) => Err(Some(Redirect::to(i.id()))),
+            Err(_) => Err(Some(Redirect::to(&i.id()))),
         };
     }
     Err(None)
@@ -279,7 +279,7 @@ fn create_url(
 fn redirect_short(id: String) -> Option<Redirect> {
     let i = UrlId::from_id(&id)?;
     let info = UrlInfo::load(&i.filename());
-    Some(Redirect::to(info.target))
+    Some(Redirect::to(&info.target))
 }
 
 //get_count provides a simple way for ajax request to get the paste count
@@ -297,7 +297,7 @@ struct NotFoundCtx {
     request: String,
 }
 
-#[catch(404)]
+#[error(404)]
 fn not_found(req: &Request) -> Template {
     Template::render(
         "404",
