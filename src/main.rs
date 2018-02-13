@@ -198,7 +198,7 @@ fn retrieve_pretty(id: String, host: RequestInfo) -> Result<Template, Option<Red
         let i = PasteId::from_id(&id).unwrap();
         return match f.read_to_string(&mut buf) {
             Ok(_) => Ok(Template::render("pretty", PrettyCtx::new(i, buf, host))),
-            Err(_) => Err(Some(Redirect::to(&i.id()))),
+            Err(_) => Err(Some(Redirect::to(&format!("/{}", i.id())))),
         };
     }
     Err(None)
