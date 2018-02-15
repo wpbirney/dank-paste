@@ -17,16 +17,24 @@ body {
 }
 
 /* headings */
+h1:before {content: "# ";}
 h2:before {content: "## ";}
 h3:before {content: "### ";}
 h1,h2,h3 {
     font-size: 1em;
 }
 
+input[type='file'],
+input[type='url'],
+textarea,
+select {
+    border-width: 0px 0px 2px 0px;
+    border-style: solid;
+    border-color: rgb(30,30,30);
+}
+
 input[type="file"],
 .cb {
-    border-bottom: 2px solid;
-    border-color: rgb(30,30,30);
     font-size: 1em;
     padding: 0.5em;
     margin: 0.5em;
@@ -36,6 +44,7 @@ input[type="file"]:hover,
 input[type='url']:hover,
 button:hover,
 textarea:hover,
+select:hover,
 .cb:hover {
     border-color: green;
 }
@@ -43,9 +52,6 @@ textarea:hover,
 input[type='url'] {
     background-color: rgba(0,0,0,0);
     color: grey;
-    border-width: 0px 0px 2px 0px;
-    border-style: solid;
-    border-color: rgb(30,30,30);
     margin: 0.25em;
     padding: 0.25em
 }
@@ -92,7 +98,6 @@ input[type='url'] {
 
 button {
     border: 1px solid grey;
-    text-decoration: none;
     background-color: rgba(0,0,0,0);
     color: grey;
     padding: 0.25em;
@@ -102,9 +107,6 @@ button {
 textarea {
     padding: 0.5em;
     background-color: black;
-    border-width: 0px 0px 2px 0px;
-    border-style: solid;
-    border-color: rgb(30,30,30);
     color: grey;
     margin: 0.5em;
     display: grid;
@@ -113,7 +115,6 @@ textarea {
 #expire {
     background-color: rgba(0,0,0,0);
     color: grey;
-    border: 1px solid grey;
     margin: 0.5em;
     padding: 0.25em;
 }
