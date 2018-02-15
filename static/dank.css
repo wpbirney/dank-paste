@@ -1,3 +1,8 @@
+/*
+    the dank.css framework
+    released under the dankware license @ https://github.com/wpbirney/dankware-license
+*/
+
 @font-face {
     font-family: "Hermit";
     src: url("/static/fonts/Hermit-medium.otf");
@@ -6,16 +11,14 @@
 body {
     font-size: 1em;
     font-family: "Hermit";
-    /*line-height: 1.5;*/
     margin: 0;
     color: grey;
     background-color: black;
 }
 
-
+/* headings */
 h2:before {content: "## ";}
 h3:before {content: "### ";}
-
 h1,h2,h3 {
     font-size: 1em;
 }
@@ -30,8 +33,21 @@ input[type="file"],
 }
 
 input[type="file"]:hover,
+input[type='url']:hover,
+button:hover,
+textarea:hover,
 .cb:hover {
     border-color: green;
+}
+
+input[type='url'] {
+    background-color: rgba(0,0,0,0);
+    color: grey;
+    border-width: 0px 0px 2px 0px;
+    border-style: solid;
+    border-color: rgb(30,30,30);
+    margin: 0.25em;
+    padding: 0.25em
 }
 
 .container {
@@ -83,14 +99,12 @@ button {
     margin: 0.5em;
 }
 
-button:hover {
-    border-color: green;
-}
-
 textarea {
     padding: 0.5em;
     background-color: black;
-    border: 1px solid grey;
+    border-width: 0px 0px 2px 0px;
+    border-style: solid;
+    border-color: rgb(30,30,30);
     color: grey;
     margin: 0.5em;
     display: grid;
