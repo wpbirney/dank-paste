@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>World's Dankest Pastebin</title>
+<link rel="stylesheet" href="/static/dank.css">
+</head>
+<body>
+<h2>dank-paste</h2>
+<h3>the world's dankest pastebin</h3>
+
+<div class=container>
+
+    <div class="card">
+        <input type='file'>
+        <div class='help-block'>select a local file to paste</div>
+        <div class='cb'>
+            <input type='checkbox'>
+            <label>keep orignal filename</label>
+        </div>
+        <button id='upload-btn'>upload</button>
+    </div>
+
+
+    <div class="card">
+        <div class='header'>paste text</div>
+        <textarea></textarea>
+        <button id='upload-btn'>upload</button>
+    </div>
+
+    <div class="card">
+        <div class='header'>settings</div>
+        <select id="expire">
+            <option value="0">one-shot</option>
+            <option value="60">1 minute</option>
+            <option value="1800">30 minutes</option>
+            <option value="3600">1 hour</option>
+            <option value="86400" selected>1 day</option>
+            <option value="172800">2 days</option>
+            <option value="259200">3 days</option>
+        </select>
+        <div class='help-block'>select expire time</div>
+    </div>
+
+</div>
+
+</body>
+</html>

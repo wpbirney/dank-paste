@@ -1,0 +1,105 @@
+@font-face {
+    font-family: "Hermit";
+    src: url("/static/fonts/Hermit-medium.otf");
+}
+
+body {
+    font-size: 1em;
+    font-family: "Hermit";
+    /*line-height: 1.5;*/
+    margin: 0;
+    color: grey;
+    background-color: black;
+}
+
+
+h2:before {content: "## ";}
+h3:before {content: "### ";}
+
+h1,h2,h3 {
+    font-size: 1em;
+}
+
+input[type="file"],
+.cb {
+    border-bottom: 2px solid;
+    border-color: rgb(30,30,30);
+    font-size: 1em;
+    padding: 0.5em;
+    margin: 0.5em;
+}
+
+input[type="file"]:hover,
+.cb:hover {
+    border-color: green;
+}
+
+.container {
+    display: inline-block;
+    flex-flow: column;
+}
+
+.card {
+    border: 1px solid grey;
+    margin: 1em;
+    display: grid;
+}
+
+.header {
+    text-align: center;
+    margin: 0.25em;
+    padding: 0.25em;
+    border-bottom: 2px solid;
+    border-color: rgb(30,30,30);
+}
+
+.help-block {
+    padding: 0.25em;
+    font-size: 0.75em;
+    margin-left: 0.5em;
+}
+
+.cb {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.cb label {
+    font-size: 0.75em;
+}
+
+.btn {
+    display: flex;
+    justify-content: center;
+}
+
+button {
+    border: 1px solid grey;
+    text-decoration: none;
+    background-color: rgba(0,0,0,0);
+    color: grey;
+    padding: 0.25em;
+    margin: 0.5em;
+}
+
+button:hover {
+    border-color: green;
+}
+
+textarea {
+    padding: 0.5em;
+    background-color: black;
+    border: 1px solid grey;
+    color: grey;
+    margin: 0.5em;
+    display: grid;
+}
+
+#expire {
+    background-color: rgba(0,0,0,0);
+    color: grey;
+    border: 1px solid grey;
+    margin: 0.5em;
+    padding: 0.25em;
+}
