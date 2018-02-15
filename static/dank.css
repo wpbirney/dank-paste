@@ -50,10 +50,15 @@ select:hover,
 }
 
 input[type='url'] {
-    background-color: rgba(0,0,0,0);
     color: grey;
     margin: 0.25em;
     padding: 0.25em
+}
+
+input[type='url'],
+button,
+select {
+    background-color: rgba(0,0,0,0);
 }
 
 .container {
@@ -98,7 +103,6 @@ input[type='url'] {
 
 button {
     border: 1px solid grey;
-    background-color: rgba(0,0,0,0);
     color: grey;
     padding: 0.25em;
     margin: 0.5em;
@@ -113,7 +117,6 @@ textarea {
 }
 
 #expire {
-    background-color: rgba(0,0,0,0);
     color: grey;
     margin: 0.5em;
     padding: 0.25em;
