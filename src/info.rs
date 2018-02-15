@@ -16,11 +16,12 @@ pub trait DankInfo {
 #[derive(Serialize, Deserialize, DankInfo)]
 pub struct PasteInfo {
     pub expire: u64,
+    pub name: Option<String>
 }
 
 impl PasteInfo {
-    pub fn new(secs: u64) -> PasteInfo {
-        PasteInfo { expire: secs }
+    pub fn new(secs: u64, name: Option<String>) -> PasteInfo {
+        PasteInfo { expire: secs, name: name }
     }
 }
 

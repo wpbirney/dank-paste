@@ -13,6 +13,7 @@ use multipart::server::Multipart;
 
 pub struct MultipartUpload {
     file: Vec<u8>,
+    pub name: Option<String>
 }
 
 impl MultipartUpload {
@@ -45,18 +46,21 @@ impl FromData for MultipartUpload {
 
         // Custom implementation parts
         let mut file = None;
+        let mut name = None;
 
         mp.foreach_entry(|mut entry| match entry.headers.name.as_str() {
             "file" => {
                 let mut d = Vec::new();
                 entry.data.read_to_end(&mut d).expect("cant read");
                 file = Some(d);
+                name = Some(entry.headers.filename.unwrap());
             }
             other => panic!("No known key {}", other),
         }).expect("Unable to iterate");
 
         Outcome::Success(MultipartUpload {
             file: file.expect("file not set"),
+            name: name
         })
     }
 }

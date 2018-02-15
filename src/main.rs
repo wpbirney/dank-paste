@@ -5,7 +5,7 @@
 
 extern crate multipart;
 extern crate rand;
-#[macro_use]
+
 extern crate rocket;
 extern crate rocket_contrib;
 
@@ -23,11 +23,13 @@ mod id;
 mod info;
 mod mpu;
 mod limiting;
+mod namedpaste;
 
 use id::{DankId, PasteId, UrlId};
 use info::{PasteInfo, UrlInfo, RequestInfo, DankInfo};
 use mpu::MultipartUpload;
 use limiting::*;
+use namedpaste::*;
 
 use std::path::{Path, PathBuf};
 use std::fs::{self, File};
@@ -143,7 +145,7 @@ fn static_file(path: PathBuf) -> Option<NamedFile> {
     NamedFile::open(Path::new("static/").join(path)).ok()
 }
 
-fn get_paste(id: String) -> Option<File> {
+fn get_paste(id: String) -> Option<(File, PasteInfo)> {
     let pid = match id.rfind('.') {
         Some(idx) => id[..idx].to_string(),
         None => id,
@@ -154,20 +156,25 @@ fn get_paste(id: String) -> Option<File> {
     if Path::new(&p.del()).exists() {
         return None;
     }
-
+    let mut inf = None;
     if Path::new(&p.json()).exists() {
         let info = PasteInfo::load(&p.json());
         if info.expire == 0 {
             File::create(&p.del()).ok()?;
         }
+        inf = Some(info);
     }
 
-    File::open(p.filename()).ok()
+    let f = File::open(p.filename()).ok()?;
+
+
+    Some((f, inf?))
 }
 
 #[get("/<id>")]
-fn retrieve(id: String) -> Option<File> {
-    get_paste(id.clone())
+fn retrieve(id: String) -> Option<NamedPaste> {
+    let (file,info) = get_paste(id.clone())?;
+    Some(NamedPaste::new(file, &info))
 }
 
 #[derive(Serialize)]
@@ -193,7 +200,7 @@ impl PrettyCtx {
 
 #[get("/h/<id>")]
 fn retrieve_pretty(id: String, host: RequestInfo) -> Result<Template, Option<Redirect>> {
-    if let Some(mut f) = get_paste(id.clone()) {
+    if let Some((mut f,_)) = get_paste(id.clone()) {
         let mut buf = String::new();
         let i = PasteId::from_id(&id).unwrap();
         return match f.read_to_string(&mut buf) {
@@ -235,7 +242,7 @@ fn upload(
     _limit: LimitGuard,
 ) -> Option<Json<UploadResponse>> {
     let id = PasteId::generate();
-    let pinfo = PasteInfo::new(info.expire);
+    let pinfo = PasteInfo::new(info.expire, None);
     paste.stream_to_file(Path::new(&id.filename())).unwrap();
     pinfo.write_to_file(&id.json());
     paste_count.count.fetch_add(1, Ordering::Relaxed);
@@ -250,7 +257,7 @@ fn upload_form(
     _limit: LimitGuard,
 ) -> Option<Json<UploadResponse>> {
     let id = PasteId::generate();
-    let pinfo = PasteInfo::new(info.expire);
+    let pinfo = PasteInfo::new(info.expire, Some(paste.name.clone()?));
     paste.stream_to_file(Path::new(&id.filename())).unwrap();
     pinfo.write_to_file(&id.json());
     paste_count.count.fetch_add(1, Ordering::Relaxed);
