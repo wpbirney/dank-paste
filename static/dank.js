@@ -116,13 +116,13 @@ class dankPaste {
 uploadButton.addEventListener('click', function() {
     var files = fileInput.files;
     if(files.length > 0) {
-        var form = new FormData();
-        form.append('file', files[0], files[0].name);
-        var dp = new dankPaste('/upload', expire.value);
+        //var form = new FormData();
+        //form.append('file', files[0], files[0].name);
+        var dp = new dankPaste('/', expire.value);
         dp.onsuccess = function(response) {
             addUrlEntry(response);
         };
-        dp.send(form);
+        dp.send(files[0]);
     } else {
         alert('Please select a file to upload');
     }

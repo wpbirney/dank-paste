@@ -1,16 +1,14 @@
 #![feature(plugin)]
-#![plugin(rocket_codegen)]
-#![feature(custom_derive)]
-#![feature(decl_macro)]
+//#![plugin(rocket_codegen)]
+#![feature(proc_macro_hygiene, decl_macro)]
 
 extern crate multipart;
 extern crate rand;
 
-extern crate rocket;
+#[macro_use] extern crate rocket;
 extern crate rocket_contrib;
 
-#[macro_use]
-extern crate serde_derive;
+#[macro_use] extern crate serde_derive;
 
 //#[macro_use]
 extern crate serde_json;
@@ -21,13 +19,12 @@ extern crate dank_codegen;
 mod paste_dog;
 mod id;
 mod info;
-mod mpu;
+//mod mpu;
 mod limiting;
 mod namedpaste;
 
 use id::{DankId, PasteId, UrlId};
 use info::{PasteInfo, UrlInfo, RequestInfo, DankInfo};
-use mpu::MultipartUpload;
 use limiting::*;
 use namedpaste::*;
 
@@ -43,8 +40,9 @@ use rocket::response::{NamedFile, Redirect};
 use rocket::Request;
 use rocket::State;
 
-use rocket_contrib::Template;
-use rocket_contrib::Json;
+use rocket_contrib::json::Json;
+use rocket_contrib::templates::Template;
+
 
 const VERSION: &'static str = "dank-paste v0.2.5";
 
@@ -108,7 +106,6 @@ fn main() {
         retrieve,
         retrieve_pretty,
         upload,
-        upload_form,
         create_url,
         redirect_short,
         get_count,
@@ -118,7 +115,7 @@ fn main() {
         .attach(Template::fairing())
         .manage(Limiter::create_state())
         .manage(a_counter)
-        .catch(errors![not_found])
+        .register(catchers![not_found])
         .mount("/", r)
         .launch();
 }
@@ -205,7 +202,7 @@ fn retrieve_pretty(id: String, host: RequestInfo) -> Result<Template, Option<Red
         let i = PasteId::from_id(&id).unwrap();
         return match f.read_to_string(&mut buf) {
             Ok(_) => Ok(Template::render("pretty", PrettyCtx::new(i, buf, host))),
-            Err(_) => Err(Some(Redirect::to(&format!("/{}", i.id())))),
+            Err(_) => Err(Some(Redirect::to(format!("/{}", i.id())))),
         };
     }
     Err(None)
@@ -249,21 +246,6 @@ fn upload(
     Some(Json(UploadResponse::new(id, pinfo, &info.host)))
 }
 
-#[post("/upload", data = "<paste>")]
-fn upload_form(
-    paste: MultipartUpload,
-    info: RequestInfo,
-    paste_count: State<Arc<PasteCounter>>,
-    _limit: LimitGuard,
-) -> Option<Json<UploadResponse>> {
-    let id = PasteId::generate();
-    let pinfo = PasteInfo::new(info.expire, Some(paste.name.clone()?));
-    paste.stream_to_file(Path::new(&id.filename())).unwrap();
-    pinfo.write_to_file(&id.json());
-    paste_count.count.fetch_add(1, Ordering::Relaxed);
-    Some(Json(UploadResponse::new(id, pinfo, &info.host)))
-}
-
 /*
     the create_url route handles new short url creation
     PasteInfo request guard is used here soley to get the expire header
@@ -286,7 +268,7 @@ fn create_url(
 fn redirect_short(id: String) -> Option<Redirect> {
     let i = UrlId::from_id(&id)?;
     let info = UrlInfo::load(&i.filename());
-    Some(Redirect::to(&info.target))
+    Some(Redirect::to(info.target))
 }
 
 //get_count provides a simple way for ajax request to get the paste count
@@ -304,7 +286,7 @@ struct NotFoundCtx {
     request: String,
 }
 
-#[error(404)]
+#[catch(404)]
 fn not_found(req: &Request) -> Template {
     Template::render(
         "404",
