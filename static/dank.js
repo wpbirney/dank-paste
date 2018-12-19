@@ -105,6 +105,7 @@ class dankPaste {
             }
         };
         this.xhr.setRequestHeader('expire', expire);
+        this.xhr.setRequestHeader('filename', name);
     }
     send(data) {
         this.xhr.send(data);
