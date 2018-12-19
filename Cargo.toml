@@ -5,9 +5,7 @@ authors = ["Wilson Birney <wpb@360scada.com>"]
 
 [dependencies]
 rocket = "0.4.0"
-#rocket_codegen = "0.4.0"
 rand = "*"
-multipart = "0.14"
 serde = "*"
 serde_json = "*"
 serde_derive = "*"

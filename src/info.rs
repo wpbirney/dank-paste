@@ -43,6 +43,7 @@ impl UrlInfo {
 pub struct RequestInfo {
     pub expire: u64,
     pub host: String,
+    pub name: Option<String>
 }
 
 impl<'a, 'r> FromRequest<'a, 'r> for RequestInfo {
@@ -60,10 +61,12 @@ impl<'a, 'r> FromRequest<'a, 'r> for RequestInfo {
         };
 
         let host = request.headers().get_one("Host").unwrap();
+        let name = request.headers().get_one("filename");
 
         Outcome::Success(RequestInfo {
             expire: expire,
             host: host.to_string(),
+            name: name.map(|x| x.to_string()),
         })
     }
 }

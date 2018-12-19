@@ -1,8 +1,6 @@
 #![feature(plugin)]
-//#![plugin(rocket_codegen)]
 #![feature(proc_macro_hygiene, decl_macro)]
 
-extern crate multipart;
 extern crate rand;
 
 #[macro_use] extern crate rocket;
@@ -239,7 +237,7 @@ fn upload(
     _limit: LimitGuard,
 ) -> Option<Json<UploadResponse>> {
     let id = PasteId::generate();
-    let pinfo = PasteInfo::new(info.expire, None);
+    let pinfo = PasteInfo::new(info.expire, info.name);
     paste.stream_to_file(Path::new(&id.filename())).unwrap();
     pinfo.write_to_file(&id.json());
     paste_count.count.fetch_add(1, Ordering::Relaxed);

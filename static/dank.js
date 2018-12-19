@@ -85,7 +85,7 @@ var fileInput = document.getElementById('upload-file');
         on success dankPaste calls this.onsuccess, expects the responseText
 */
 class dankPaste {
-    constructor(url, expire) {
+    constructor(url, expire, name) {
         this.xhr = new XMLHttpRequest();
         this.xhr.open('POST', url, true);
         var self = this;
@@ -118,7 +118,7 @@ uploadButton.addEventListener('click', function() {
     if(files.length > 0) {
         //var form = new FormData();
         //form.append('file', files[0], files[0].name);
-        var dp = new dankPaste('/', expire.value);
+        var dp = new dankPaste('/', expire.value, files[0].name);
         dp.onsuccess = function(response) {
             addUrlEntry(response);
         };
