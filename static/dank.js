@@ -147,11 +147,14 @@ pasteButton.addEventListener('click', function() {
 submitUrl.addEventListener('click', function() {
     var urlentry = document.getElementById("url-entry");
     if(urlentry.value != "") {
-        fetch('https://dpst.xyz/shorty?url=' + urlentry.value, {
+        fetch('/shorty?url=' + urlentry.value, {
             headers: { 'expire': expire.value }
         }).then((response) => { 
-            addShortUrlEntry(response, urlentry.value);
-            urlentry.value = "";
+            response.text().then((text) => {
+                pasteUrlContainer.style.display = 'flex';
+                addShortUrlEntry(text, urlentry.value);
+                urlentry.value = "";
+            });
         });
     } else {
         alert("Enter a url jackass");

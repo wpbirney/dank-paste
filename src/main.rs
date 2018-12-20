@@ -101,12 +101,12 @@ fn main() {
     let r = routes![
         index,
         static_file,
-        retrieve,
-        retrieve_pretty,
         upload,
         create_url,
         redirect_short,
         get_count,
+        retrieve,
+        retrieve_pretty,
     ];
 
     rocket::ignite()
@@ -248,7 +248,7 @@ fn upload(
     the create_url route handles new short url creation
     PasteInfo request guard is used here soley to get the expire header
 */
-#[post("/shorty?<url>")]
+#[get("/shorty?<url>")]
 fn create_url(
     url: String,
     info: RequestInfo,
