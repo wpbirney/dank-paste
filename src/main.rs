@@ -42,7 +42,7 @@ use rocket_contrib::json::Json;
 use rocket_contrib::templates::Template;
 
 
-const VERSION: &'static str = "dank-paste v0.2.5";
+const VERSION: &'static str = "dank-paste v0.3.0";
 
 pub fn proto() -> String {
     match args().nth(1) {
