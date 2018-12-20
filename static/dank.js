@@ -147,12 +147,12 @@ pasteButton.addEventListener('click', function() {
 submitUrl.addEventListener('click', function() {
     var urlentry = document.getElementById("url-entry");
     if(urlentry.value != "") {
-        var dp = new dankPaste('/shorty', expire.value);
-        dp.onsuccess = function(response) {
+        fetch('https://dpst.xyz/shorty?url=' + urlentry.value, {
+            headers: { 'expire': expire.value }
+        }).then((response) => { 
             addShortUrlEntry(response, urlentry.value);
             urlentry.value = "";
-        };
-        dp.send(urlentry.value);
+        });
     } else {
         alert("Enter a url jackass");
     }
