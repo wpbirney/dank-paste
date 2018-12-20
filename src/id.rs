@@ -70,7 +70,7 @@ pub struct UrlId {
 }
 
 impl UrlId {
-    pub fn url(&self, host: &str) -> String {
-        format!("{}://{}/s/{}", ::proto(), host, self.id)
+    pub fn url(&self) -> String {
+        format!("/s/{}", self.id)
     }
 }

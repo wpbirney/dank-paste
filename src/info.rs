@@ -1,7 +1,11 @@
 use std::fs::File;
 
 use rocket::request::{self, Request, FromRequest};
-use rocket::Outcome;
+use rocket::{Data, Outcome::{Failure, Success}};
+use rocket::data::{FromData, Outcome, Transform, Transformed};
+use rocket::http::Status;
+
+use std::io::Read;
 
 use serde_json;
 
@@ -63,10 +67,40 @@ impl<'a, 'r> FromRequest<'a, 'r> for RequestInfo {
         let host = request.headers().get_one("Host").unwrap();
         let name = request.headers().get_one("filename");
 
-        Outcome::Success(RequestInfo {
+        Success(RequestInfo {
             expire: expire,
             host: host.to_string(),
             name: name.map(|x| x.to_string()),
         })
     }
 }
+
+pub struct UrlShortRequest {
+    pub url: String
+}
+
+impl<'a> FromData<'a> for UrlShortRequest {
+    type Error = ();
+    type Owned = String;
+    type Borrowed = str;
+
+    fn transform(_: &Request, data: Data) -> Transform<Outcome<Self::Owned, Self::Error>> {
+        let mut stream = data.open().take(2048);
+        let mut string = String::with_capacity((2048 / 2) as usize);
+        let outcome = match stream.read_to_string(&mut string) {
+            Ok(_) => Success(string),
+            Err(_) => Failure((Status::InternalServerError, ()))
+        };
+
+        Transform::Borrowed(outcome)
+    }
+
+    fn from_data(_: &Request, outcome: Transformed<'a, Self>) -> Outcome<Self, Self::Error> {
+        let string = outcome.borrowed()?;
+
+        Success(UrlShortRequest{ url: string.into() })
+    }
+
+}
+
+

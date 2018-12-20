@@ -147,8 +147,10 @@ pasteButton.addEventListener('click', function() {
 submitUrl.addEventListener('click', function() {
     var urlentry = document.getElementById("url-entry");
     if(urlentry.value != "") {
-        fetch('/shorty?url=' + urlentry.value, {
-            headers: { 'expire': expire.value }
+        fetch('/shorty', {
+            method: 'POST',
+            headers: { 'expire': expire.value },
+            body: urlentry.value
         }).then((response) => { 
             response.text().then((text) => {
                 pasteUrlContainer.style.display = 'flex';

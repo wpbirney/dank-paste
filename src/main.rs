@@ -22,7 +22,7 @@ mod limiting;
 mod namedpaste;
 
 use id::{DankId, PasteId, UrlId};
-use info::{PasteInfo, UrlInfo, RequestInfo, DankInfo};
+use info::{PasteInfo, UrlInfo, RequestInfo, DankInfo, UrlShortRequest};
 use limiting::*;
 use namedpaste::*;
 
@@ -248,17 +248,17 @@ fn upload(
     the create_url route handles new short url creation
     PasteInfo request guard is used here soley to get the expire header
 */
-#[get("/shorty?<url>")]
+#[post("/shorty", data = "<url>")]
 fn create_url(
-    url: String,
+    url: UrlShortRequest,
     info: RequestInfo,
     paste_count: State<Arc<PasteCounter>>,
     _limit: LimitGuard,
 ) -> String {
     let id = UrlId::generate();
-    UrlInfo::new(info.expire, url).write_to_file(&id.filename());
+    UrlInfo::new(info.expire, url.url).write_to_file(&id.filename());
     paste_count.count.fetch_add(1, Ordering::Relaxed);
-    id.url(&info.host)
+    id.url()
 }
 
 //simple enough to read... just redirects to the requested id's expanded url
